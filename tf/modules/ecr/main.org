@@ -1,0 +1,67 @@
+** Github Actions Role
+
+[[https://github.com/aws-actions/amazon-ecr-login][Amazon ECR Login]]
+
+This action requires the following minimum set of permissions to login
+to ECR Private:
+
+#+begin_src javascript
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "GetAuthorizationToken",
+        "Effect": "Allow",
+        "Action": [
+          "ecr:GetAuthorizationToken"
+        ],
+        "Resource": "*"
+      }
+    ]
+  }  
+#+end_src
+
+This action requires the following minimum set of permissions to login
+to ECR Private:
+
+#+begin_src javascript
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "AllowPull",
+        "Effect": "Allow",
+        "Action": [
+          "ecr:BatchGetImage",
+          "ecr:GetDownloadUrlForLayer"
+        ],
+        "Resource": "arn:aws:ecr:us-east-1:123456789012:repository/my-ecr-repo"
+      }
+    ]
+  }
+#+end_src
+
+The following minimum permissions are required for pushing and pulling
+images in an ECR Private repository:
+
+#+begin_src javascript
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "AllowPushPull",
+        "Effect": "Allow",
+        "Action": [
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:CompleteLayerUpload",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:InitiateLayerUpload",
+          "ecr:PutImage",
+          "ecr:UploadLayerPart"
+        ],
+        "Resource": "arn:aws:ecr:us-east-1:123456789012:repository/my-ecr-repo"
+      }
+    ]
+  }
+#+end_src

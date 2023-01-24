@@ -5,16 +5,16 @@
 
 * AWS Mina Infrastructure
 
-Goals:
-
 ** Terraform tfstate backend storage
+
+*** Terraform policy and Roles
 
 Add the following IAM policies to the terraform user
 
-s3:ListBucket on arn:aws:s3:::mybucket
-s3:GetObject on arn:aws:s3:::mybucket/path/to/my/key
-s3:PutObject on arn:aws:s3:::mybucket/path/to/my/key
-s3:DeleteObject on arn:aws:s3:::mybucket/path/to/my/key
+- s3:ListBucket on arn:aws:s3:::mybucket
+- s3:GetObject on arn:aws:s3:::mybucket/path/to/my/key
+- s3:PutObject on arn:aws:s3:::mybucket/path/to/my/key
+- s3:DeleteObject on arn:aws:s3:::mybucket/path/to/my/key
 
 #+begin_src javascript
   {
@@ -54,11 +54,6 @@ s3:DeleteObject on arn:aws:s3:::mybucket/path/to/my/key
   arn:aws:organizations::154664751924:account/o-yfvkydeybn/192863802010
 #+end_src
 
-
-** AWS ECS Cluster
-
-[[https://dev.to/thnery/create-an-aws-ecs-cluster-using-terraform-g80][Create an ECS Cluster Using Terraform]]
-
 ** Network
 
 *** VPC
@@ -67,7 +62,6 @@ s3:DeleteObject on arn:aws:s3:::mybucket/path/to/my/key
 
 *** Public Subnet
 
+** AWS ECS Cluster
 
-
-
-
+[[https://dev.to/thnery/create-an-aws-ecs-cluster-using-terraform-g80][Create an ECS Cluster Using Terraform]]
