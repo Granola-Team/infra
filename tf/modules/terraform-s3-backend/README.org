@@ -1,0 +1,182 @@
+* Terraform Bootstrap
+
+Before we can get started with our terraform IaC, we must first
+bootstrap the s3 backend so that we have a central place to store our
+terraform state.
+
+** Terraform input variables
+
+#+begin_src terraform :tangle variables.tf
+  variable "region" {
+    type        = string
+    description = "AWS Region"
+    default     = ["us-east-1"]
+  }
+
+  variable "environment" {
+    type        = string
+    description = "Type of environment"
+  }
+#+end_src
+** Terraform output values
+
+#+begin_src terraform :tangle outputs.tf
+  
+#+end_src
+** Terraform bootstrapping role
+
+We will follow the principle of least privilege.
+
+#+begin_src terraform :tangle policy.tf
+  data "aws_iam_policy_document" "state_force_ssl" {
+    statement {
+      sid       = "AllowSSLRequestsOnly"
+      actions   = ["s3:*"]
+      effect    = "Deny"
+      resources = [
+        aws_s3_bucket.state.arn,
+        "${aws_s3_bucket.state.arn}/*"
+      ]
+      condition {
+        test     = "Bool"
+        variable = "aws:SecureTransport"
+        values   = ["false"]
+      }
+      principals {
+        type        = "*"
+        identifiers = ["*"]
+      }
+    }
+  }
+
+  data "aws_iam_policy_document" "state" {
+    statement {
+      effect    = "Allow"
+      actions   = [
+        "s3:ListBucket",
+        "s3:GetBucketVersioning",
+      ]
+      resources = [
+        aws_s3_bucket.state.arn,
+      ]
+    }
+    statement {
+      effect    = "Allow"
+      actions = [
+        "s3:GetObject",
+        "s3:PutObject",
+        // "s3:DeleteObject",
+      ]
+      resources = [
+        "${aws_s3_bucket.state.arn}/*"
+      ]
+    }
+  }
+
+  resource "aws_iam_role" "state_role" {
+    name               = "state-role"
+    assume_role_policy = join("", data.aws_iam_policy_document.*.json)
+  }
+#+end_src
+
+** Provision KMS encryption key
+
+It's our responsibility to secure our terraform state at rest. We will
+provision a KMS key and convenience alias so that we may refer back to
+it at a later time.
+
+#+begin_src terraform :tangle kms.tf
+  resource "aws_kms_key" "state_key" {
+    description             = "This key is used to encrypt the terraform state bucket"
+    deletion_window_in_days = 14
+    enable_key_rotation     = true
+  }
+
+  resource "aws_kms_alias" "state_key_alias" {
+    name          = "alias/state-${var.environment}-key"
+    target_key_id = aws_kms_key.state_key.key_id
+  }
+
+#+end_src
+
+** Provision S3 Bucket
+
+Create Terraform IAM policy for fine grained access to manage the
+Terraform state in S3 and DynamoDB.
+
+Provision the s3 bucket and iam policies
+
+#+begin_src terraform :tangle s3.tf
+  resource "aws_s3_bucket" "state" {
+    bucket = "granola-tfstate-${var.environment}"
+
+    server_side_encryption_configuration {
+      rule {
+        apply_server_side_encryption_by_default {
+          kms_master_key_id = aws_kms_key.state_key.arn
+          sse_algorithm     = "aws:kms"
+        }
+      }
+    }
+  }
+
+  resource "aws_s3_bucket_acl" "state" {
+    bucket = aws_s3_bucket.state.id
+    acl    = "private"
+  }
+
+  resource "aws_s3_bucket_versioning" "state" {
+    bucket = aws_s3_bucket.state.id
+    versioning_configuration {
+      status = "Enabled"
+    }
+  }
+
+  // TODO: Enable S3 bucket logging
+
+  resource "aws_s3_bucket_policy" "state_policy" {
+    bucket = aws_s3_bucket.state.id
+    policy = join("", data.aws_iam_policy_document.*.json)
+  }
+
+  // Block all public access to the bucket
+  resource "aws_s3_bucket_public_access_block" "state" {
+    bucket                  = aws_s3_bucket.state.id
+
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+  }
+
+#+end_src
+
+** Provision DynamoDB table
+
+Create a DynamoDB table to enable concurrent edits and locking of the
+state files.
+
+#+begin_src terraform :tangle dynamodb.tf
+  resource "aws_dynamodb_table" "state_lock" {
+    name     = "granola-tfstate-lock-${var.environment}"
+    hash_key = "LockID"
+
+    attribute {
+      name = "LockID"
+      type = "S"
+    }
+
+    server_side_encryption {
+      enabled     = var.dynamodb_enable_server_side_encryption
+      kms_key_arn = aws_kms_key.state_key.arn
+    }
+
+    point_in_time_recovery {
+      enabled = true
+    }
+  }
+#+end_src
+
+** Links & Stuff
+
+[[https://developer.hashicorp.com/terraform/language/settings/backends/s3][S3 tfstate backend]]
