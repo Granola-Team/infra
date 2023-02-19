@@ -1,4 +1,4 @@
-# Mina Terraform
+# Granola Terraform
 
 # License
 

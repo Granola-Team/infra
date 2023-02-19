@@ -1,6 +1,40 @@
 * Terraform Bootstrap
 
-** Protecting access to Terraform state
+Before we can get started with our terraform IaC, we must first
+bootstrap the s3 backend so that we have a central place to store our
+terraform state.
+
+** Terraform Bootstrapping Role
+
+We will follow the principle of least privilege.
+
+#+begin_src terraform
+  resource "aws_iam_user" "terraform_user" {
+    name = "Terraform User"
+  }
+#+end_src
+
+** Provision KMS encryption key
+
+
+[[https://docs.aws.amazon.com/kms/latest/developerguide/kms-alias.html][KMS alias documentation]]
+
+
+#+begin_src terraform
+  resource "aws_kms_key" "terraform_state_key" {
+    description             = "This key is used to encrypt the terraform state bucket"
+    deletion_window_in_days = 14
+    enable_key_rotation     = true
+  }
+
+  resource "aws_kms_alias" "terraform_state_key_alias" {
+    name          = "alias/terraform-state-${var.environment}-key"
+    target_key_id = aws_kms_key.terraform_state_key.key_id
+  }
+
+#+end_src
+
+** Provision S3 Bucket
 
 Create Terraform IAM policy for fine grained access to manage the
 Terraform state in S3 and DynamoDB.
@@ -8,21 +42,94 @@ Terraform state in S3 and DynamoDB.
 *** Example S3 IAM Policy
 
 #+begin_src javascript
-    {
+  {
     "Version": "2012-10-17",
     "Statement": [
       {
         "Effect": "Allow",
         "Action": "s3:ListBucket",
-        "Resource": "arn:aws:s3:::myorg-terraform-states"
+        "Resource": "arn:aws:s3:::mybucket"
       },
       {
         "Effect": "Allow",
-        "Action": ["s3:GetObject", "s3:PutObject"],
-        "Resource": "arn:aws:s3:::myorg-terraform-states/myapp/production/tfstate"
+        "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
+        "Resource": "arn:aws:s3:::mybucket/path/to/my/key"
       }
     ]
   }
+
+#+end_src
+
+Provision the s3 bucket and iam policies
+
+#+begin_src terraform
+  resource "aws_s3_bucket" "state" {
+    bucket = "granola-tfstate-${var.environment}"
+
+    versioning {
+      enabled = true
+    }
+
+    server_side_encryption_configuration {
+      rule {
+        apply_server_side_encryption_by_default {
+          kms_master_key_id = aws_kms_key.state_key.arn
+          sse_algorithm     = "aws:kms"
+        }
+      }
+    }
+  }
+
+  resource "aws_s3_bucket_policy" "state_policy" {
+    bucket = aws_s3_bucket.state.id
+    policy = join("", data.aws_iam_policy_document.*.json)
+
+  }
+  // Force SSL
+  data "aws_iam_policy_document" "state_force_ssl" {
+    statement {
+      sid       = "AllowSSLRequestsOnly"
+      actions   = ["s3:*"]
+      effect    = "Deny"
+      resources = [
+        aws_s3_bucket.state.arn,
+        "${aws_s3_bucket.state.arn}/*"
+      ]
+      condition {
+        test     = "Bool"
+        variable = "aws:SecureTransport"
+        values   = ["false"]
+      }
+      principals {
+        type        = "*"
+        identifiers = ["*"]
+      }
+    }
+  }
+
+  data "aws_iam_policy_document" "state" {
+    statement {
+      effect    = "Allow"
+      actions   = [
+        "s3:ListBucket",
+      ]
+      resources = [
+        aws_s3_bucket.state.arn,
+      ]
+    }
+    statement {
+      effect    = "Allow"
+      actions = [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject",
+      ]
+      resources = [
+        "${aws_s3_bucket.state.arn}/${var.application}/terraform.tfstate",
+      ]
+    }
+  }
+
 
 #+end_src
 
@@ -58,11 +165,9 @@ Terraform state in S3 and DynamoDB.
 ** Provision DynamoDB table for TFState lock
 
 #+begin_src terraform
-  resource "aws_dynamodb_table" "terraform-tfstate" {
-    name           = "granola-state-lock-table"
+  resource "aws_dynamodb_table" "terraform_state_lock" {
+    name           = "granola-${var.environemnt}-state-lock"
     hash_key       = "LockID"
-    read_capacity  = 20 # Figure out if we need this
-    write_capacity = 20 # Figout out if we need this
 
     attribute {
       name = "LockID"
@@ -78,9 +183,9 @@ provision a KMS key and convenience alias so that we may refer back to
 it at a later time.
 
 #+begin_src terraform
-  resource "aws_kms_key" "terraform-bucket-key" {
-    description             = "This key is used to encrypt bucket objects"
-    deletion_window_in_days = 10
+  resource "aws_kms_key" "terraform_state_key" {
+    description             = "This key is used to encrypt the terraform state bucket"
+    deletion_window_in_days = 14
     enable_key_rotation     = true
   }
 
@@ -93,7 +198,7 @@ it at a later time.
 ** Create encrypted S3 bucket
 
 #+begin_src terraform
-  resource "aws_s3_bucket" "terraform-state" {
+  resource "aws_s3_bucket" "terraform_state" {
     bucket = "mybucket"
     acl    = "private"
   
@@ -104,7 +209,7 @@ it at a later time.
     server_side_encryption_configuration {
       rule {
         apply_server_side_encryption_by_default {
-          kms_master_key_id = aws_kms_key.terraform-bucket-key.arn
+          kms_master_key_id = aws_kms_key.terraform_state_key.arn
           sse_algorithm     = "aws:kms"
         }
       }
