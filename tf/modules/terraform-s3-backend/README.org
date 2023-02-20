@@ -9,14 +9,27 @@ the following command on the command line:
   emacs --batch --eval "(require 'org)" --eval '(org-babel-tangle-file "README.org")'
 #+end_src
 
-Or if you are in emacs, you can tangle the files by issuing the
-following key shortcut =C-c C-v t=
+You can tangle the README.org literate program  with following
+shortcut =C-c C-v t= or =M-x org-babel-tangle-file= in emacs.
 
 ** Introduction
 
 Before we can get started with our terraform IaC, we must first
 bootstrap the s3 backend so that we have a central place to store our
 terraform state.
+
+** Terraform versions
+
+#+begin_src terraform :tangle versions.tf
+  terraform {
+    required_providers {
+      aws = {
+        source = "hashicorp/aws"
+        version = "~> 4.0"
+      }
+    }
+  }
+#+end_src
 
 ** Terraform input variables
 
@@ -35,8 +48,9 @@ terraform state.
 ** Terraform output values
 
 #+begin_src terraform :tangle outputs.tf
-  
+  // Output KMS private keys
 #+end_src
+
 ** Terraform bootstrapping role
 
 We will follow the principle of least privilege.
