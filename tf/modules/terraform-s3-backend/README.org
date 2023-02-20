@@ -255,7 +255,7 @@ write with locking.
 
 #+begin_src terraform :tangle dynamodb.tf
   resource "aws_dynamodb_table" "state_lock" {
-    name     = "granola-state-lock-${var.environment}"
+    name     = "granola-tfstate-lock-${var.environment}"
     hash_key = "LockID"
 
     attribute {
