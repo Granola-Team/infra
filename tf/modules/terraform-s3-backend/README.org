@@ -1,4 +1,18 @@
-* Terraform Bootstrap
+* Terraform S3 Backend
+
+** Build Instructions
+
+You can export the source code from this literate program by issuing
+the following command on the command line:
+
+#+begin_src bash
+  emacs --batch --eval "(require 'org)" --eval '(org-babel-tangle-file "README.org")'
+#+end_src
+
+Or if you are in emacs, you can tangle the files by issuing the
+following key shortcut =C-c C-v t=
+
+** Introduction
 
 Before we can get started with our terraform IaC, we must first
 bootstrap the s3 backend so that we have a central place to store our
@@ -65,7 +79,7 @@ We will follow the principle of least privilege.
       actions = [
         "s3:GetObject",
         "s3:PutObject",
-        // "s3:DeleteObject",
+        "s3:DeleteObject",
       ]
       resources = [
         "${aws_s3_bucket.state.arn}/*"
@@ -73,8 +87,8 @@ We will follow the principle of least privilege.
     }
   }
 
-  resource "aws_iam_role" "state_role" {
-    name               = "state-role"
+  resource "aws_iam_role" "terraform_role" {
+    name               = "terraform-role"
     assume_role_policy = join("", data.aws_iam_policy_document.*.json)
   }
 #+end_src
