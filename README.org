@@ -1,0 +1,13 @@
+* Granola Terraform
+
+** Bootstrapping Terraform S3 Backend
+
+** New AWS Organization
+
+#+begin_src fundamental
+  arn:aws:organizations::154664751924:account/o-yfvkydeybn/192863802010
+#+end_src
+
+* License
+
+Copyright 2023 Granola Systems Inc.

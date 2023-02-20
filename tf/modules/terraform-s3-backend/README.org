@@ -1,9 +1,15 @@
 * Terraform S3 Backend
 
-** Build Instructions
+** Introduction
 
-You can export the source code from this literate program by issuing
-the following command on the command line:
+This configuration creates an encrypted S3 bucket to store your
+terraform state with versioning and a lifecycle rule to prevent
+accidental deletions of the bucket.
+
+** Export Instruction
+
+You can export the source code from this literate program by running
+the following command line program:
 
 #+begin_src bash
   emacs --batch --eval "(require 'org)" --eval '(org-babel-tangle-file "README.org")'
@@ -11,12 +17,6 @@ the following command on the command line:
 
 You can tangle the README.org literate program  with following
 shortcut =C-c C-v t= or =M-x org-babel-tangle-file= in emacs.
-
-** Introduction
-
-Before we can get started with our terraform IaC, we must first
-bootstrap the s3 backend so that we have a central place to store our
-terraform state.
 
 ** Terraform versions
 
@@ -45,6 +45,7 @@ terraform state.
     description = "Type of environment"
   }
 #+end_src
+
 ** Terraform output values
 
 #+begin_src terraform :tangle outputs.tf
