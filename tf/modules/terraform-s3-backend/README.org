@@ -3,8 +3,10 @@
 ** Introduction
 
 This configuration creates an encrypted S3 bucket to store your
-terraform state with versioning and a lifecycle rule to prevent
-accidental deletions of the bucket.
+terraform state with versioning. This bucket is required if you want
+to store terraform state in the AWS cloud so developers my collaborate.
+
+[[https://developer.hashicorp.com/terraform/language/settings/backends/s3][Terraform S3 backend]]
 
 ** Export Instruction
 
@@ -49,16 +51,40 @@ shortcut =C-c C-v t= or =M-x org-babel-tangle-file= in emacs.
 ** Terraform output values
 
 #+begin_src terraform :tangle outputs.tf
-  // Output KMS private keys
+  output "kms_key" {
+    description = "The KMS customer master key to encrypt state buckets."
+    value       = aws_kms_key.state_key
+  }
+
+  output "kms_key_alias" {
+    description = "The alias of the KMS customer master key used to encrypt state bucket and dynamodb."
+    value       = aws_kms_alias.state_key_alias
+  }
+
+  output "state_bucket" {
+    description = "The S3 bucket to store the remote state file."
+    value       = aws_s3_bucket.state
+  }
+
+  output "dynamodb_table" {
+    description = "The DynamoDB table to manage lock states."
+    value       = aws_dynamodb_table.state_lock
+  }
+
+  output "terraform_iam_policy" {
+    description = "The IAM Policy to access remote state environment."
+    value       = aws_iam_policy.terraform[0]
+  }
 #+end_src
 
-** Terraform bootstrapping role
+** Terraform Role
 
 We will follow the principle of least privilege. Create a role that
 has only the specfic access to modify the s3 bucket as well as the
 dynamodb lock table.
 
-Note that we didn't give access for =s3:DeleteObject=
+Note that we didn't give access for =s3:DeleteObject= to prevent
+accidental deletion with =terraform apply=.
 
 #+begin_src terraform :tangle policy.tf
   data "aws_iam_policy_document" "state" {
@@ -245,7 +271,3 @@ state files.
     }
   }
 #+end_src
-
-** Links & Stuff
-
-[[https://developer.hashicorp.com/terraform/language/settings/backends/s3][S3 tfstate backend]]
