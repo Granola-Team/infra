@@ -39,7 +39,7 @@ shortcut =C-c C-v t= or =M-x org-babel-tangle-file= in emacs.
   variable "region" {
     type        = string
     description = "AWS Region"
-    default     = ["us-east-1"]
+    default     = "ca-central-1"
   }
 
   variable "environment" {
@@ -75,7 +75,7 @@ Log out important values
 
   output "terraform_iam_policy" {
     description = "The IAM Policy to access remote state environment."
-    value       = aws_iam_policy.terraform[0]
+    value       = aws_iam_policy.terraform_policy
   }
 #+end_src
 
@@ -89,6 +89,16 @@ Note that we didn't give access for =s3:DeleteObject= to prevent
 accidental deletion with =terraform apply=.
 
 #+begin_src terraform :tangle policy.tf
+  resource "aws_iam_policy" "terraform_policy" {
+    name = "terraform-policy"
+    policy = data.aws_iam_policy_document.state.json
+  }
+
+  # resource "aws_iam_role" "terraform_role" {
+  #   name               = "terraform-role"
+  #   assume_role_policy = data.aws_iam_policy_document.state.json
+  # }
+
   data "aws_iam_policy_document" "state" {
     statement {
       effect    = "Allow"
@@ -106,6 +116,7 @@ accidental deletion with =terraform apply=.
       actions = [
         "s3:GetObject",
         "s3:PutObject",
+        "s3:DeleteObject",
       ]
       resources = [
         "${aws_s3_bucket.state.arn}/*"
@@ -148,11 +159,6 @@ accidental deletion with =terraform apply=.
       ]
     }
   }
-
-  resource "aws_iam_role" "terraform_role" {
-    name               = "terraform-role"
-    assume_role_policy = data.aws_iam_policy_document.state.json
-  }
 #+end_src
 
 ** Provision KMS Encryption Key
@@ -163,13 +169,12 @@ it at a later time.
 
 #+begin_src terraform :tangle kms.tf
   resource "aws_kms_key" "state_key" {
-    description             = "This key is used to encrypt the terraform state bucket"
-    deletion_window_in_days = 14
-    enable_key_rotation     = true
+    description         = "This key is used to encrypt the terraform state bucket and dynamodb table"
+    enable_key_rotation = true
   }
 
   resource "aws_kms_alias" "state_key_alias" {
-    name          = "alias/state-${var.environment}-key"
+    name          = "alias/state-key-${var.environment}"
     target_key_id = aws_kms_key.state_key.key_id
   }
 #+end_src
@@ -254,22 +259,24 @@ Create a DynamoDB table to enable concurrent edits by serializing
 write with locking.
 
 #+begin_src terraform :tangle dynamodb.tf
-  resource "aws_dynamodb_table" "state_lock" {
-    name     = "granola-tfstate-lock-${var.environment}"
-    hash_key = "LockID"
+    resource "aws_dynamodb_table" "state_lock" {
+      name         = "granola-tfstate-lock-${var.environment}"
+      hash_key     = "LockID"
 
-    attribute {
-      name = "LockID"
-      type = "S"
-    }
+      attribute {
+        name = "LockID"
+        type = "S"
+      }
 
-    server_side_encryption {
-      enabled     = var.dynamodb_enable_server_side_encryption
-      kms_key_arn = aws_kms_key.state_key.arn
-    }
+      billing_mode = "PAY_PER_REQUEST"
 
-    point_in_time_recovery {
-      enabled = true
+      server_side_encryption {
+        enabled     = true
+        kms_key_arn = aws_kms_key.state_key.arn
+      }
+
+      point_in_time_recovery {
+        enabled = true
+      }
     }
-  }
 #+end_src
