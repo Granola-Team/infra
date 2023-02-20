@@ -6,9 +6,10 @@ data "aws_iam_policy_document" "state" {
       "s3:GetBucketVersioning",
     ]
     resources = [
-      aws_s3_bucket.state.arn,
+      aws_s3_bucket.state.arn
     ]
   }
+
   statement {
     effect    = "Allow"
     actions = [
@@ -17,6 +18,42 @@ data "aws_iam_policy_document" "state" {
     ]
     resources = [
       "${aws_s3_bucket.state.arn}/*"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:DescribeTable",
+    ]
+    resources = [
+      aws_dynamodb_table.state_lock.arn
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:ListKeys"
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:GenerateDataKey"
+    ]
+    resources = [
+      aws_kms_key.state_key.arn
     ]
   }
 }

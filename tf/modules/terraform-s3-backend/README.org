@@ -54,7 +54,11 @@ shortcut =C-c C-v t= or =M-x org-babel-tangle-file= in emacs.
 
 ** Terraform bootstrapping role
 
-We will follow the principle of least privilege.
+We will follow the principle of least privilege. Create a role that
+has only the specfic access to modify the s3 bucket as well as the
+dynamodb lock table.
+
+Note that we didn't give access for =s3:DeleteObject=
 
 #+begin_src terraform :tangle policy.tf
   data "aws_iam_policy_document" "state" {
@@ -65,9 +69,10 @@ We will follow the principle of least privilege.
         "s3:GetBucketVersioning",
       ]
       resources = [
-        aws_s3_bucket.state.arn,
+        aws_s3_bucket.state.arn
       ]
     }
+
     statement {
       effect    = "Allow"
       actions = [
@@ -76,6 +81,42 @@ We will follow the principle of least privilege.
       ]
       resources = [
         "${aws_s3_bucket.state.arn}/*"
+      ]
+    }
+
+    statement {
+      effect = "Allow"
+      actions = [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+      ]
+      resources = [
+        aws_dynamodb_table.state_lock.arn
+      ]
+    }
+
+    statement {
+      effect = "Allow"
+      actions = [
+        "kms:ListKeys"
+      ]
+      resources = [
+        "*"
+      ]
+    }
+
+    statement {
+      effect = "Allow"
+      actions = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:DescribeKey",
+          "kms:GenerateDataKey"
+      ]
+      resources = [
+        aws_kms_key.state_key.arn
       ]
     }
   }
@@ -103,7 +144,6 @@ it at a later time.
     name          = "alias/state-${var.environment}-key"
     target_key_id = aws_kms_key.state_key.key_id
   }
-
 #+end_src
 
 ** Provision S3 Bucket
@@ -116,7 +156,7 @@ Requirements:
 - Must prevent accidential deletion of s3 bucket
 - Must enforce SSL to access contents of the bucket
 
-*** TODO Create a S3 bucket for logging and Cloudtrail
+*** TODO Create a S3 bucket for logging with Cloudtrail
 
 #+begin_src terraform :tangle s3.tf
   resource "aws_s3_bucket" "state" {
