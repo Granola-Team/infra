@@ -20,7 +20,7 @@ the following command line program:
 You can tangle the README.org literate program  with following
 shortcut =C-c C-v t= or =M-x org-babel-tangle-file= in emacs.
 
-** Terraform versions
+** Terraform Versions
 
 #+begin_src terraform :tangle versions.tf
   terraform {
@@ -33,7 +33,7 @@ shortcut =C-c C-v t= or =M-x org-babel-tangle-file= in emacs.
   }
 #+end_src
 
-** Terraform input variables
+** Terraform Input Variables
 
 #+begin_src terraform :tangle variables.tf
   variable "region" {
@@ -48,7 +48,9 @@ shortcut =C-c C-v t= or =M-x org-babel-tangle-file= in emacs.
   }
 #+end_src
 
-** Terraform output values
+** Terraform Output Values
+
+Log out important values
 
 #+begin_src terraform :tangle outputs.tf
   output "kms_key" {
@@ -153,7 +155,7 @@ accidental deletion with =terraform apply=.
   }
 #+end_src
 
-** Provision KMS encryption key
+** Provision KMS Encryption Key
 
 It's our responsibility to secure our terraform state at rest. We will
 provision a KMS key and convenience alias so that we may refer back to
@@ -246,14 +248,14 @@ Requirements:
   }
 #+end_src
 
-** Provision DynamoDB table
+** Provision DynamoDB Locking Table
 
-Create a DynamoDB table to enable concurrent edits and locking of the
-state files.
+Create a DynamoDB table to enable concurrent edits by serializing
+write with locking.
 
 #+begin_src terraform :tangle dynamodb.tf
   resource "aws_dynamodb_table" "state_lock" {
-    name     = "granola-tfstate-lock-${var.environment}"
+    name     = "granola-state-lock-${var.environment}"
     hash_key = "LockID"
 
     attribute {
