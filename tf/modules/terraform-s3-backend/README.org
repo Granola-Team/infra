@@ -57,27 +57,6 @@ shortcut =C-c C-v t= or =M-x org-babel-tangle-file= in emacs.
 We will follow the principle of least privilege.
 
 #+begin_src terraform :tangle policy.tf
-  data "aws_iam_policy_document" "state_force_ssl" {
-    statement {
-      sid       = "AllowSSLRequestsOnly"
-      actions   = ["s3:*"]
-      effect    = "Deny"
-      resources = [
-        aws_s3_bucket.state.arn,
-        "${aws_s3_bucket.state.arn}/*"
-      ]
-      condition {
-        test     = "Bool"
-        variable = "aws:SecureTransport"
-        values   = ["false"]
-      }
-      principals {
-        type        = "*"
-        identifiers = ["*"]
-      }
-    }
-  }
-
   data "aws_iam_policy_document" "state" {
     statement {
       effect    = "Allow"
@@ -94,7 +73,6 @@ We will follow the principle of least privilege.
       actions = [
         "s3:GetObject",
         "s3:PutObject",
-        "s3:DeleteObject",
       ]
       resources = [
         "${aws_s3_bucket.state.arn}/*"
@@ -104,7 +82,7 @@ We will follow the principle of least privilege.
 
   resource "aws_iam_role" "terraform_role" {
     name               = "terraform-role"
-    assume_role_policy = join("", data.aws_iam_policy_document.*.json)
+    assume_role_policy = data.aws_iam_policy_document.state.json
   }
 #+end_src
 
@@ -130,10 +108,15 @@ it at a later time.
 
 ** Provision S3 Bucket
 
-Create Terraform IAM policy for fine grained access to manage the
-Terraform state in S3 and DynamoDB.
+Provision the s3 bucket and and associate IAM policies.
 
-Provision the s3 bucket and iam policies
+Requirements:
+- Must be private and all public access blocked
+- Must be versioned so we can fallback if something goes wrong
+- Must prevent accidential deletion of s3 bucket
+- Must enforce SSL to access contents of the bucket
+
+*** TODO Create a S3 bucket for logging and Cloudtrail
 
 #+begin_src terraform :tangle s3.tf
   resource "aws_s3_bucket" "state" {
@@ -161,23 +144,40 @@ Provision the s3 bucket and iam policies
     }
   }
 
-  // TODO: Enable S3 bucket logging
-
-  resource "aws_s3_bucket_policy" "state_policy" {
+  resource "aws_s3_bucket_policy" "state_force_ssl" {
     bucket = aws_s3_bucket.state.id
-    policy = join("", data.aws_iam_policy_document.*.json)
+    policy = data.aws_iam_policy_document.state_force_ssl.json
+    depends_on = [aws_s3_bucket_public_access_block.state]
   }
 
-  // Block all public access to the bucket
+  data "aws_iam_policy_document" "state_force_ssl" {
+    statement {
+      sid       = "AllowSSLRequestsOnly"
+      actions   = ["s3:*"]
+      effect    = "Deny"
+      resources = [
+        aws_s3_bucket.state.arn,
+        "${aws_s3_bucket.state.arn}/*"
+      ]
+      condition {
+        test     = "Bool"
+        variable = "aws:SecureTransport"
+        values   = ["false"]
+      }
+      principals {
+        type        = "*"
+        identifiers = ["*"]
+      }
+    }
+  }
+
   resource "aws_s3_bucket_public_access_block" "state" {
     bucket                  = aws_s3_bucket.state.id
-
     block_public_acls       = true
     block_public_policy     = true
     ignore_public_acls      = true
     restrict_public_buckets = true
   }
-
 #+end_src
 
 ** Provision DynamoDB table
