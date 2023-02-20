@@ -4,7 +4,7 @@
 
 This configuration creates an encrypted S3 bucket to store your
 terraform state with versioning. This bucket is required if you want
-to store terraform state in the AWS cloud so developers my collaborate.
+to store terraform state in the AWS cloud.
 
 [[https://developer.hashicorp.com/terraform/language/settings/backends/s3][Terraform S3 backend]]
 
