@@ -1,6 +1,6 @@
 output "ecr_repo" {
   description = "The ECR repository url"
-  value       = aws_ecr_repository.repository_url
+  value       = aws_ecr_repository.ecr_repo.repository_url
 }
 
 output "kms_key" {

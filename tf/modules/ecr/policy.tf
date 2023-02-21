@@ -1,6 +1,6 @@
 resource "aws_iam_policy" "ecr_policy" {
   name = "ecr-policy"
-  policy = data.aws_iam_policy_document.erc_policy.json
+  policy = data.aws_iam_policy_document.ecr_policy.json
 }
 
 data "aws_iam_policy_document" "ecr_policy" {

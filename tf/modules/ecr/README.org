@@ -80,7 +80,7 @@ Log out important values
 #+begin_src terraform :tangle outputs.tf
   output "ecr_repo" {
     description = "The ECR repository url"
-    value       = aws_ecr_repository.repository_url
+    value       = aws_ecr_repository.ecr_repo.repository_url
   }
 
   output "kms_key" {
@@ -102,13 +102,13 @@ Log out important values
 
 ** Provision ECR Repo
 
-#+begin_src terraform tangle :main.yaml
+#+begin_src terraform :tangle main.tf
   resource "aws_ecr_repository" "ecr_repo" {
     name                 = var.ecr_name
     image_tag_mutability = var.ecr_image_tag_mutability
 
     encryption_configuration {
-      encryption_type = "kms"
+      encryption_type = "KMS"
       kms_key = aws_kms_key.ecr_key.arn
     }
   
@@ -129,7 +129,7 @@ including pushing and pulling.
 #+begin_src terraform :tangle policy.tf
   resource "aws_iam_policy" "ecr_policy" {
     name = "ecr-policy"
-    policy = data.aws_iam_policy_document.erc_policy.json
+    policy = data.aws_iam_policy_document.ecr_policy.json
   }
 
   data "aws_iam_policy_document" "ecr_policy" {
