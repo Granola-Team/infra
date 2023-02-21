@@ -1,67 +1,163 @@
-** Github Actions Role
+* Elastic Container Registry (ECR)
 
-[[https://github.com/aws-actions/amazon-ecr-login][Amazon ECR Login]]
+** Introduction
 
-This action requires the following minimum set of permissions to login
-to ECR Private:
+This configuration creates an encrypted ECR repo.
 
-#+begin_src javascript
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Sid": "GetAuthorizationToken",
-        "Effect": "Allow",
-        "Action": [
-          "ecr:GetAuthorizationToken"
-        ],
-        "Resource": "*"
-      }
-    ]
-  }  
+** Export Instruction
+
+You can export the source code from this literate program by running
+the following command line program:
+
+#+begin_src bash
+  emacs --batch --eval "(require 'org)" --eval '(org-babel-tangle-file "README.org")'
 #+end_src
 
-This action requires the following minimum set of permissions to login
-to ECR Private:
+You can tangle the README.org literate program  with following
+shortcut =C-c C-v t= or =M-x org-babel-tangle-file= in emacs.
 
-#+begin_src javascript
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Sid": "AllowPull",
-        "Effect": "Allow",
-        "Action": [
-          "ecr:BatchGetImage",
-          "ecr:GetDownloadUrlForLayer"
-        ],
-        "Resource": "arn:aws:ecr:us-east-1:123456789012:repository/my-ecr-repo"
+** Terraform Versions
+
+#+begin_src terraform :tangle versions.tf
+  terraform {
+    required_providers {
+      aws = {
+        source = "hashicorp/aws"
+        version = "~> 4.0"
       }
-    ]
+    }
   }
 #+end_src
 
-The following minimum permissions are required for pushing and pulling
-images in an ECR Private repository:
+** Terraform Input Variables
 
-#+begin_src javascript
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Sid": "AllowPushPull",
-        "Effect": "Allow",
-        "Action": [
-          "ecr:BatchGetImage",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:CompleteLayerUpload",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:InitiateLayerUpload",
-          "ecr:PutImage",
-          "ecr:UploadLayerPart"
-        ],
-        "Resource": "arn:aws:ecr:us-east-1:123456789012:repository/my-ecr-repo"
-      }
-    ]
+#+begin_src terraform :tangle variables.tf
+  variable "region" {
+    type        = string
+    description = "AWS Region"
+    default     = "ca-central-1"
+  }
+
+  variable "environment" {
+    type        = string
+    description = "Type of environment"
+  }
+
+  variable "ecr_name" {
+    type        = string
+    description = "The name of the ECR repo"
+  }
+
+  variable "ecr_image_tag_mutability" {
+    type        = string
+    description = "The tag mutability setting for the repository. Must be one of: MUTABLE or IMMUTABLE. Defaults to MUTABLE."
+    default     = "IMMUTABLE"
+  }
+
+#+end_src
+
+** Provision KMS ECR Encryption Keys
+
+Encrypt the ECR repository
+
+#+begin_src terraform :tangle kms.tf
+  resource "aws_kms_key" "ecr_key" {
+    description         = "The KMS customer master key to encrypt the ecr repo."
+    enable_key_rotation = true
+  }
+
+  resource "aws_kms_alias" "ecr_key_alias" {
+    name          = "alias/ecr-key-${var.environment}"
+    target_key_id = aws_kms_key.ecr_key.key_id
+  }
+
+#+end_src
+
+** Terraform Output Values
+
+Log out important values
+
+#+begin_src terraform :tangle outputs.tf
+  output "ecr_repo" {
+    description = "The ECR repository url"
+    value       = aws_ecr_repository.repository_url
+  }
+
+  output "kms_key" {
+    description = "The KMS customer master key to encrypt the ecr repo."
+    value       = aws_kms_key.ecr_key
+  }
+
+  output "kms_key_alias" {
+    description = "The alias of the KMS customer master key used to encrypt the ecr repo."
+    value       = aws_kms_alias.ecr_key_alias
+  }
+
+  output "ecr_iam_policy" {
+    description = "The IAM Policy to access the ECR repository."
+    value       = aws_iam_policy.ecr_policy
+  }
+#+end_src
+
+
+** Provision ECR Repo
+
+#+begin_src terraform tangle :main.yaml
+  resource "aws_ecr_repository" "ecr_repo" {
+    name                 = var.ecr_name
+    image_tag_mutability = var.ecr_image_tag_mutability
+
+    encryption_configuration {
+      encryption_type = "kms"
+      kms_key = aws_kms_key.ecr_key.arn
+    }
+  
+    image_scanning_configuration {
+      scan_on_push = true
+    }
+  }
+#+end_src
+
+** ECR Policy
+
+The following policy will allow people the minimum set of permissions
+to login to a private ECR as well as manage repository contents
+including pushing and pulling.
+
+[[https://docs.aws.amazon.com/AmazonECR/latest/userguide/security_iam_id-based-policy-examples.html][Amazon ECR Identity-based policy examples]]
+
+#+begin_src terraform :tangle policy.tf
+  resource "aws_iam_policy" "ecr_policy" {
+    name = "ecr-policy"
+    policy = data.aws_iam_policy_document.erc_policy.json
+  }
+
+  data "aws_iam_policy_document" "ecr_policy" {
+    // Get Authorization Token
+    statement {
+      actions = [
+        "ecr:GetAuthorizationToken",
+      ]
+      resources = ["*"]
+    }
+    // Manage Repository Contents
+    statement {
+      actions = [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:BatchGetImage",
+        "ecr:CompleteLayerUpload",
+        "ecr:DescribeImages",
+        "ecr:DescribeRepositories",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:GetRepositoryPolicy",
+        "ecr:InitiateLayerUpload",
+        "ecr:ListImages",
+        "ecr:PutImage",
+        "ecr:UploadLayerPart",
+      ]
+      resources = [
+        aws_ecr_repository.ecr_repo.arn,
+      ]
+    }
   }
 #+end_src
