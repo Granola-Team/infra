@@ -38,4 +38,5 @@ module "mina-node-network" {
   private_subnets_offset = 1 // 10.0.1.0/24
   region                 = local.region
   availability_zones     = local.availability_zones
+  include_route53_zone_association = "no"
 }
