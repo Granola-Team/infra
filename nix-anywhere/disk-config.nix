@@ -34,5 +34,31 @@
         };
       };
     };
+    disk.sdb = {
+      device = lib.mkDefault "/dev/sdb";
+      type = "disk";
+      content = {
+        type = "gpt";
+        partitions = {
+          swap = {
+            size = "1G";
+	    content = {
+	      type = "swap";
+	      randomEncryption = true;
+	      resumeDevice = true; # resume from hiberation from this device
+	    };
+          };
+          xtra = {
+            name = "xtra";
+            size = "100%";
+            content = {
+              type = "filesystem";
+              format = "ext4";
+              mountpoint = "/mnt/xtra";
+            };
+          };
+        };
+      };
+    };
   };
 }
