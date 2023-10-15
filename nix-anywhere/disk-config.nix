@@ -22,17 +22,9 @@
               mountpoint = "/boot";
             };
           };
-	  swap = {
-	    size = "100%";
-	    content = {
-	      type = "swap";
-	      randomEncryption = true;
-	      resumeDevice = true; # resume from hiberation from this device
-	    };
-	  };
           root = {
             name = "root";
-            end = "100%";
+            size = "100%";
             content = {
               type = "filesystem";
               format = "ext4";
