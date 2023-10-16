@@ -23,14 +23,25 @@
 
   # Need to figure out how to run this automatically:
   # usermod --add-subuids 100000-165535 --add-subgids 100000-165535 buildkite-agent-gandi-nixos
+  environment.etc = {
+    subuid = {
+      text = "buildkite-agent-gandi-nixos:100000:65536";
+      mode = "0644";
+    };
+    subgid = {
+      text = "buildkite-agent-gandi-nixos:100000:65536";
+      mode = "0644";
+    };
+  };
 
   boot.isContainer = true;
 
   environment.systemPackages = with pkgs; [
     vim
     tmux
-    mosh
   ];
+
+  programs.mosh.enable = true;
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
