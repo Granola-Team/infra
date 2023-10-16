@@ -11,6 +11,7 @@
     extraConfig = "spawn=6";
     tags = {
       kvm = "true";
+      podman = "false";
     };
   };
 
