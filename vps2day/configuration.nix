@@ -1,5 +1,4 @@
 { config, pkgs, ... }:
-
 {
   imports = [ ./hardware-configuration.nix ];
 
@@ -27,27 +26,27 @@
   # access, create your own users and further secure your server.
 
   services.openssh.enable = true;
-  services.openssh.settings.PermitRootLogin = "yes";
-  networking.firewall.allowedTCPPorts = [ 22 ];
+  programs.mosh.enable = true;
 
   # Under normal circumstances we would listen to your server's cloud-init callback and mark the server
   # as installed at this point. As we don't deliver cloud-init with NixOS we have to use a workaround
   # to indicate that your server is successfully installed. You can remove the cronjob after the server
   # has been started the first time. It's no longer needed.
-
   services.cron.enable = true;
   services.cron.systemCronJobs = [
     "@reboot root sleep 30 && curl -L -XPOST -q https://portal.vps2day.com/api/service/v1/cloud-init/callback > /dev/null 2>&1"
   ];
 
-  # Please remove the hardcoded password from the configuration and set
-  # the password using the "passwd" command after the first boot.
-
   users.users.root = {
     isNormalUser = false;
-    password = "p!dKRRmLWvSGyxeq3MgZ";
     openssh.authorizedKeys.keys = [
      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];
   };
+  environment.systemPackages = with pkgs; [
+    tmux
+    vim
+    neofetch
+  ];
+  system.stateVersion = "23.11";
 }
