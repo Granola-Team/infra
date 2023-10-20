@@ -40,13 +40,28 @@
   users.users.root = {
     isNormalUser = false;
     openssh.authorizedKeys.keys = [
-     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINBgTr9+Krb77UzfMIIo0iKEfClzlKl82WZupmY6lTVp"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];
   };
+
   environment.systemPackages = with pkgs; [
     tmux
     vim
     neofetch
+    buildkite-agent
   ];
+
   system.stateVersion = "23.11";
+
+  users.users.buildkite = {
+    isNormalUser = true;
+    useDefaultShell = true;
+    extraGroups = [ "wheel" ];
+    autoSubUidGidRange = true;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINBgTr9+Krb77UzfMIIo0iKEfClzlKl82WZupmY6lTVp"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
+    ];
+  };
 }
