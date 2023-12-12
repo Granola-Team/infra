@@ -32,12 +32,3 @@ module "remote_state" {
   environment = local.environment
   region      = local.region
 }
-
-resource "aws_iam_user" "terraform" {
-  name = local.user_name
-}
-
-resource "aws_iam_user_policy_attachment" "remote_state_access" {
-  user       = aws_iam_user.terraform.name
-  policy_arn = module.remote_state.terraform_iam_policy.arn
-}
