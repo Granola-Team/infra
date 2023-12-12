@@ -1,5 +1,4 @@
 locals {
-  user_name   = "terraformuser"
   bucket_name = "staging-mina-static-website"
   region      = "ca-central-1"
 }
