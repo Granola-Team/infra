@@ -1,5 +1,4 @@
 locals {
-  user_name   = "terraformuser"
   environment = "prod"
   region      = "ca-central-1"
 }
