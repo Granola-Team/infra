@@ -1,5 +1,5 @@
 locals {
-  bucket_name = "staging-mina-static-website"
+  bucket_name = "staging-minasearch"
   region      = "ca-central-1"
 }
 
@@ -14,7 +14,7 @@ terraform {
   }
   backend "s3" {
     bucket         = "granola-tfstate-prod"
-    key            = "staging-mina-static-website/terraform.tfstate"
+    key            = "staging-minasearch/terraform.tfstate"
     region         = "ca-central-1"
     encrypt        = true
     kms_key_id     = "alias/state-key-prod"
