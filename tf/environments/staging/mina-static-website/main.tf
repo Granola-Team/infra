@@ -15,7 +15,7 @@ terraform {
   }
   backend "s3" {
     bucket         = "granola-tfstate-prod"
-    key            = "mina-static-website/terraform.tfstate"
+    key            = "staging-mina-static-website/terraform.tfstate"
     region         = "ca-central-1"
     encrypt        = true
     kms_key_id     = "alias/state-key-prod"
