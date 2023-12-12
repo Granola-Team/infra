@@ -3,7 +3,7 @@
 ## Bootstrapping Terraform S3 Backend
 
 In order to use the Terraform S3 backend to store terraform state, it
-first must be created locally.
+first must be bootstrapped locally from the command line.
 
 ```terraform
 locals {
