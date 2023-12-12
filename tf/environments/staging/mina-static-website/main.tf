@@ -1,6 +1,7 @@
 locals {
   user_name   = "terraformuser"
   bucket_name = "staging-mina-static-website"
+  app_name    = "minasearch"
   region      = "ca-central-1"
 }
 
@@ -30,8 +31,25 @@ provider "aws" {
 module "mina-static-website" {
   source      = "../../../modules/s3-static-website/"
   bucket_name = local.bucket_name
+  app_name    = local.app_name
 }
 
-output "output" {
-  value = module.mina-static-website
+output "bucket_endpoint" {
+  description = "Bucket endpoint"
+  value       = module.mina-static-website.bucket_endpoint
+}
+
+output "cloudfront_distribution" {
+    description = "CloudFront distribution"
+    value       = module.mina-static-website.cloudfront_distribution
+}
+
+output "access_key_id" {
+    description = "the AWS access key id for the CI/CD user"
+    value = module.mina-static-website.access_key_id
+}
+
+output "encypted_secret_access_key" {
+    description = "Encyrpted AWS secret access key"
+    value = module.mina-static-website.encypted_secret_access_key
 }
