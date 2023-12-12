@@ -40,24 +40,27 @@ resource "aws_s3_bucket_acl" "main" {
   ]
 }
 
+data "aws_iam_policy_document" "policy" {
+  statement {
+    sid       = "PublicReadGetObject"
+    effect    = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    actions   = ["s3:GetObject"]
+    resources = [
+      "${aws_s3_bucket.main.arn}",
+      "${aws_s3_bucket.main.arn}/*",
+    ]
+  }
+}
+
+
 resource "aws_s3_bucket_policy" "main" {
   bucket = aws_s3_bucket.main.id
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "PublicReadGetObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource = [
-          aws_s3_bucket.main.arn,
-          "${aws_s3_bucket.main.arn}/*",
-        ]
-      },
-    ]
-  })
+  policy = data.aws_iam_policy_document.policy.json
 
   depends_on = [
     aws_s3_bucket_public_access_block.main
