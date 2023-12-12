@@ -43,13 +43,3 @@ output "cloudfront_distribution" {
     description = "CloudFront distribution"
     value       = module.mina-static-website.cloudfront_distribution
 }
-
-output "access_key_id" {
-    description = "the AWS access key id for the CI/CD user"
-    value = module.mina-static-website.access_key_id
-}
-
-output "encypted_secret_access_key" {
-    description = "Encyrpted AWS secret access key"
-    value = module.mina-static-website.encypted_secret_access_key
-}

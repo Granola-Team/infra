@@ -12,13 +12,3 @@ output "cloudfront_distribution" {
     description = "CloudFront distribution"
     value       = aws_cloudfront_distribution.dist.domain_name
 }
-
-output "access_key_id" {
-    description = "the AWS access key id for the CI/CD user"
-    value = aws_iam_access_key.secrets.id
-}
-
-output "encypted_secret_access_key" {
-    description = "Encyrpted AWS secret access key"
-    value = aws_iam_access_key.secrets.encrypted_secret
-}
