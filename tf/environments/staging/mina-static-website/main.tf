@@ -1,5 +1,7 @@
 locals {
+
   bucket_name = "staging-minasearch"
+  app_name    = "minasearch"
   region      = "ca-central-1"
 }
 
