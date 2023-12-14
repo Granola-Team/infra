@@ -2,7 +2,7 @@ locals {
   app_name            = "minasearch"
   region              = "us-east-1"
   domain_name         = "minasearch.com"
-  environment         = "staging"
+  environment         = "production"
 }
 
 terraform {
@@ -16,7 +16,7 @@ terraform {
   }
   backend "s3" {
     bucket         = "granola-tfstate-prod"
-    key            = "staging-minasearch/terraform.tfstate"
+    key            = "prod-minasearch/terraform.tfstate"
     region         = "ca-central-1"
     encrypt        = true
     kms_key_id     = "alias/state-key-prod"
