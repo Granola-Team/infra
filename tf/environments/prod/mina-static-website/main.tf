@@ -1,8 +1,8 @@
 locals {
-  app_name            = "minasearch"
-  region              = "us-east-1"
-  domain_name         = "minasearch.com"
-  environment         = "production"
+  app_name    = "minasearch"
+  region      = "us-east-1"
+  domain_name = "minasearch.com"
+  environment = "production"
 }
 
 terraform {
@@ -29,10 +29,10 @@ provider "aws" {
 }
 
 module "mina-static-website" {
-  source              = "../../../modules/s3-static-website/"
-  app_name            = local.app_name
-  domain_name         = local.domain_name
-  environment         = local.environment
+  source      = "../../../modules/s3-static-website/"
+  app_name    = local.app_name
+  domain_name = local.domain_name
+  environment = local.environment
 }
 
 output "bucket_endpoint" {
