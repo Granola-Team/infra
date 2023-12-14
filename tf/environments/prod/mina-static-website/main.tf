@@ -1,8 +1,8 @@
 locals {
-
-  bucket_name = "staging-minasearch"
   app_name    = "minasearch"
-  region      = "ca-central-1"
+  region      = "us-east-1"
+  domain_name = "minasearch.com"
+  environment = "production"
 }
 
 terraform {
@@ -16,7 +16,7 @@ terraform {
   }
   backend "s3" {
     bucket         = "granola-tfstate-prod"
-    key            = "staging-minasearch/terraform.tfstate"
+    key            = "prod-minasearch/terraform.tfstate"
     region         = "ca-central-1"
     encrypt        = true
     kms_key_id     = "alias/state-key-prod"
@@ -30,8 +30,9 @@ provider "aws" {
 
 module "mina-static-website" {
   source      = "../../../modules/s3-static-website/"
-  bucket_name = local.bucket_name
   app_name    = local.app_name
+  domain_name = local.domain_name
+  environment = local.environment
 }
 
 output "bucket_endpoint" {
@@ -40,6 +41,11 @@ output "bucket_endpoint" {
 }
 
 output "cloudfront_distribution" {
-    description = "CloudFront distribution"
-    value       = module.mina-static-website.cloudfront_distribution
+  description = "CloudFront distribution"
+  value       = module.mina-static-website.cloudfront_distribution
+}
+
+output "domain_name" {
+  description = "Domain name"
+  value       = local.domain_name
 }

@@ -19,6 +19,8 @@ resource "aws_cloudfront_distribution" "dist" {
     }
   }
 
+  aliases = [ var.domain_name ]
+
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
@@ -36,10 +38,11 @@ resource "aws_cloudfront_distribution" "dist" {
   }
 
   tags = {
-    Environment = "staging"
+    Environment = "${var.environment}"
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn = aws_acm_certificate_validation.cert.certificate_arn
+    ssl_support_method = "sni-only"
   }
 }
