@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "cicd_policy" {
 
 resource "aws_iam_policy" "cicd_user" {
     name = "${title(var.app_name)}${title(var.environment)}CICDPolicy"
-    description = "${title(var.app_name)/title(var.environment)}: CI/CD management of bucket"
+    description = "${title(var.app_name)}${title(var.environment)}: CI/CD management of bucket"
     policy = data.aws_iam_policy_document.cicd_policy.json
 }
 
