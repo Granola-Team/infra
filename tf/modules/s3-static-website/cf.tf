@@ -38,7 +38,7 @@ resource "aws_cloudfront_distribution" "dist" {
   }
 
   tags = {
-    Environment = "staging"
+    Environment = "${var.environment}"
   }
 
   viewer_certificate {
