@@ -1,0 +1,7 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -p morph -i bash
+
+set -ex
+
+morph build --keep-result ./deployment.nix
+morph deploy ./deployment.nix switch
