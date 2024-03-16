@@ -6,8 +6,9 @@
   ];
 
   boot.loader.grub.device = "nodev";
+  boot.tmp.cleanOnBoot = true;
 
-  # networking.hostName = "nixos2"; # Define your hostname.
+  networking.hostName = "nixos2"; # Define your hostname.
 
   environment.systemPackages = with pkgs; [
     mosh
