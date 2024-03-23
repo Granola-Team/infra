@@ -5,6 +5,7 @@
     ./nixos-ext4-hardware-config.nix
   ];
 
+  boot.loader.grub.enable = true;
   boot.loader.grub.device = "nodev";
   boot.tmp.cleanOnBoot = true;
 

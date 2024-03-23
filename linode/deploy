@@ -1,7 +1,15 @@
 #! /usr/bin/env nix-shell
-#! nix-shell -p morph -i bash
+#! nix-shell -p nixos-rebuild -i bash
 
 set -ex
+set -e pipefail
 
-morph build --keep-result ./deployment.nix
-morph deploy ./deployment.nix switch
+switch() {
+  nixos-rebuild switch \
+    --target-host "$NIXOS_HOST" \
+    --use-remote-sudo
+}
+
+NIXOS_HOST='granola@192.53.120.145'
+NIXOS_CONFIG="$(pwd)"/nixos2-config.nix \
+switch
