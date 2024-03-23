@@ -2,7 +2,7 @@
 
 {
   imports = [ 
-    ./nixos-ext4-hardware-config.nix
+    ./nixos2-ext4-hardware-config.nix
   ];
 
   boot.loader.grub.enable = true;
