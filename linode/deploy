@@ -10,6 +10,8 @@ switch() {
     --use-remote-sudo
 }
 
-NIXOS_HOST='granola@192.53.120.145'
-NIXOS_CONFIG="$(pwd)"/nixos2-config.nix \
+export NIXOS_HOST='granola@172.105.102.110'
+export NIXOS_CONFIG="$(pwd)"/nixos1-config.nix
+# NIXOS_HOST='granola@192.53.120.145'
+# NIXOS_CONFIG="$(pwd)"/nixos2-config.nix \
 switch
