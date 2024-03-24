@@ -12,12 +12,14 @@
   networking.hostName = "nixos1"; # Define your hostname.
 
   environment.systemPackages = with pkgs; [
+    docker-compose
     git
     mosh
     neovim
     tmux
 
     # Optional goodies
+    direnv
     starship
     zoxide
   ];
