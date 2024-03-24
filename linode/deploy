@@ -1,11 +1,11 @@
 #! /usr/bin/env nix-shell
-#! nix-shell -p nixos-rebuild -i bash
+#! nix-shell -i bash
 
 set -ex
 set -e pipefail
 
 build() {
-  nixos-rebuild build
+  nixos-rebuild build --upgrade-all
 }
 
 switch() {

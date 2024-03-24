@@ -12,6 +12,7 @@
   networking.hostName = "nixos1"; # Define your hostname.
 
   environment.systemPackages = with pkgs; [
+    git
     mosh
     neovim
     tmux
@@ -20,6 +21,12 @@
     starship
     zoxide
   ];
+
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+    autoPrune.enable = true;
+  };
 
   services.openssh = {
     enable = true;
@@ -32,11 +39,11 @@
     enable = true;
     name = "bk1-%n";
     tokenPath = "/run/keys/buildkite-agent-token";
-    runtimePackages = [ pkgs.bash pkgs.git pkgs.nix pkgs.which ];
+    runtimePackages = [ pkgs.bash pkgs.git pkgs.nix ];
     tags = {
       kvm = "true";
       os = "linux";
-      podman = "false";
+      docker = "true";
       xwindows = "false";
     };
     hooks = {
@@ -59,6 +66,16 @@
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
   ];
+  users.users.buildkite-agent-bk1 = {
+    subGidRanges = [{
+      count = 65536;
+      startGid = 100000;
+    }];
+    subUidRanges = [{
+      count = 65536;
+      startUid = 100000;
+    }];
+  };
   users.users.granola = {
     isNormalUser = true;
     createHome = true;
@@ -66,6 +83,7 @@
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];
+    linger = true;
   };
   users.users.robinbb = {
     isNormalUser = true;
