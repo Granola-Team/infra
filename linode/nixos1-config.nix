@@ -1,5 +1,13 @@
 { config, lib, pkgs, ... }:
-
+let
+  hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
+    mkdir $out
+    cat > $out/environment << EOF
+      NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
+      export NETLIFY_AUTH_TOKEN
+    EOF
+  '';
+in
 {
   imports = [
     ./nixos1-ext4-hardware-config.nix
@@ -37,32 +45,6 @@
     settings.KbdInteractiveAuthentication = false;
   };
 
-  services.buildkite-agents.bk1 = {
-    enable = true;
-    name = "bk1-%n";
-    tokenPath = "/run/keys/buildkite-agent-token";
-    runtimePackages = [ pkgs.bash pkgs.git pkgs.nix ];
-    tags = {
-      kvm = "true";
-      os = "linux";
-      docker = "true";
-      xwindows = "false";
-    };
-    hooks = {
-      environment = ''
-        NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
-        export NETLIFY_AUTH_TOKEN
-      '';
-    };
-    extraConfig = ''
-      # The number of agents to spawn in parallel (default is "1")
-      spawn=3
-
-      # The priority of the agent (higher priorities are assigned work first)
-      priority=5
-    '';
-  };
-
   security.sudo.wheelNeedsPassword = false;
 
   programs.zsh.enable = true;
@@ -71,7 +53,41 @@
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
   ];
-  users.users.buildkite-agent-bk1.extraGroups = [ "docker" ];
+
+  users.users.bk = {
+    isNormalUser = true;
+    createHome = true;
+    extraGroups = [ "docker" ];
+    shell = pkgs.bash;
+    packages = [ pkgs.buildkite-agent pkgs.bash pkgs.nix ];
+  };
+
+  systemd.user.services.buildkite-agent = {
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" ];
+    preStart = ''
+      set -eu
+      cat > "$HOME/buildkite-agent.cfg" <<EOF
+      token="$(cat /run/keys/buildkite-agent-token)"
+      name="bk1-%spawn"
+      spawn=3
+      priority=5
+      tags="os=linux,kvm=true,docker=true,xwindows=false"
+      build-path="$HOME/builds"
+      hooks-path="${hooksPath}"
+      EOF
+    '';
+    serviceConfig = {
+      User = "bk";
+      ExecStart = "buildkite-agent start --config $HOME/buildkite-agent.cfg";
+      RestartSec = 5;
+      Restart = "on-failure";
+      TimeoutSec = 10;
+      TimeoutStopSec = "2 min";
+      KillMode = "mixed";
+    };
+  };
+
   users.users.granola = {
     isNormalUser = true;
     createHome = true;
