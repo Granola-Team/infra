@@ -57,7 +57,7 @@ in
   users.users.bk = {
     isNormalUser = true;
     createHome = true;
-    extraGroups = [ "docker" ];
+    extraGroups = [ "docker" "keys" ];
     shell = pkgs.bash;
     packages = [ pkgs.buildkite-agent pkgs.bash pkgs.nix ];
   };
@@ -67,6 +67,8 @@ in
     after = [ "network.target" ];
     preStart = ''
       set -eu
+      echo here1 > /home/bk/rbb
+      echo HOME=$HOME > /home/bk/rbb
       cat > "$HOME/buildkite-agent.cfg" <<EOF
       token="$(cat /run/keys/buildkite-agent-token)"
       name="bk1-%spawn"
@@ -76,9 +78,11 @@ in
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF
+      echo here2 > /home/bk/rbb
     '';
     serviceConfig = {
       User = "bk";
+      Group = "keys";
       ExecStart = "buildkite-agent start --config $HOME/buildkite-agent.cfg";
       RestartSec = 5;
       Restart = "on-failure";
@@ -91,7 +95,7 @@ in
   users.users.granola = {
     isNormalUser = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" ];
+    extraGroups = [ "wheel" "docker" "keys" ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];
@@ -101,7 +105,7 @@ in
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" ];  # Enable ‘sudo’.
+    extraGroups = [ "wheel" "docker" "keys" ];  # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];

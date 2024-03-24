@@ -1,8 +1,9 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i bash
 
-set -ex
-set -e pipefail
+set -x
+set -eu
+set -o pipefail
 
 build() {
   nixos-rebuild build --upgrade-all
@@ -29,9 +30,8 @@ ssh root@172.105.102.110 "
 switch
 
 ssh root@172.105.102.110 "
-  chown buildkite-agent-bk1:keys /run/keys/buildkite-agent-token &&
-  chown buildkite-agent-bk1:keys /run/keys/netlify-auth-token &&
+  chown bk:keys /run/keys/buildkite-agent-token &&
+  chown bk:keys /run/keys/netlify-auth-token &&
   chmod 0400 /run/keys/buildkite-agent-token
   chmod 0400 /run/keys/netlify-auth-token
-  nix-collect-garbage -d
 "
