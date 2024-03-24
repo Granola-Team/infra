@@ -8,11 +8,9 @@ let
     EOF
   '';
   buildkiteLaunch = pkgs.writeScript "buildkite-agent-launch" ''
-      #!/bin/sh
-      set -eu
-      echo HOME=$HOME >> /home/bk/rbb
-      echo PATH=$PATH >> /home/bk/rbb
-      buildkite-agent start --config "$HOME"/buildkite-agent.cfg
+    #!/bin/sh
+    set -eu
+    buildkite-agent start --config "$HOME"/buildkite-agent.cfg
   '';
 in
 {
@@ -85,7 +83,6 @@ in
     ];
     preStart = ''
       set -u
-      echo HOME=$HOME > /home/bk/rbb
       cat > "$HOME/buildkite-agent.cfg" <<EOF
       token="$(cat /run/keys/buildkite-agent-token)"
       name="bk1-%spawn"
