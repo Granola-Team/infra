@@ -3,7 +3,8 @@ let
   hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
     mkdir $out
     cat > $out/environment << EOF
-      NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
+      : NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
+      NETLIFY_AUTH_TOKEN=blah
       export NETLIFY_AUTH_TOKEN
     EOF
   '';
@@ -70,7 +71,8 @@ in
       echo here1 > /home/bk/rbb
       echo HOME=$HOME > /home/bk/rbb
       cat > "$HOME/buildkite-agent.cfg" <<EOF
-      token="$(cat /run/keys/buildkite-agent-token)"
+      : token="$(cat /run/keys/buildkite-agent-token)"
+      token=blah2
       name="bk1-%spawn"
       spawn=3
       priority=5
@@ -83,6 +85,7 @@ in
     serviceConfig = {
       User = "bk";
       Group = "keys";
+      SupplementaryGroups = "keys docker";
       ExecStart = "buildkite-agent start --config $HOME/buildkite-agent.cfg";
       RestartSec = 5;
       Restart = "on-failure";
