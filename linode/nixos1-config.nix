@@ -13,8 +13,12 @@
 
   environment.systemPackages = with pkgs; [
     mosh
+    neovim
     tmux
-    vim
+
+    # Optional goodies
+    starship
+    zoxide
   ];
 
   services.openssh = {
@@ -22,6 +26,32 @@
     settings.PermitRootLogin = "yes";
     settings.PasswordAuthentication = false;
     settings.KbdInteractiveAuthentication = false;
+  };
+
+  services.buildkite-agents.bk1 = {
+    enable = true;
+    name = "bk1-%n";
+    tokenPath = "/run/keys/buildkite-agent-token";
+    runtimePackages = [ pkgs.bash pkgs.git pkgs.nix pkgs.which ];
+    tags = {
+      kvm = "true";
+      os = "linux";
+      podman = "false";
+      xwindows = "false";
+    };
+    hooks = {
+      environment = ''
+        NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
+        export NETLIFY_AUTH_TOKEN
+      '';
+    };
+    extraConfig = ''
+      # The number of agents to spawn in parallel (default is "1")
+      spawn=3
+
+      # The priority of the agent (higher priorities are assigned work first)
+      priority=5
+    '';
   };
 
   security.sudo.wheelNeedsPassword = false;
