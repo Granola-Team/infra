@@ -3,10 +3,16 @@ let
   hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
     mkdir $out
     cat > $out/environment << EOF
-      : NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
-      NETLIFY_AUTH_TOKEN=blah
+      NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
       export NETLIFY_AUTH_TOKEN
     EOF
+  '';
+  buildkiteLaunch = pkgs.writeScript "buildkite-agent-launch" ''
+      #!/bin/sh
+      set -eu
+      echo HOME=$HOME >> /home/bk/rbb
+      echo PATH=$PATH >> /home/bk/rbb
+      buildkite-agent start --config "$HOME"/buildkite-agent.cfg
   '';
 in
 {
@@ -63,16 +69,25 @@ in
     packages = [ pkgs.buildkite-agent pkgs.bash pkgs.nix ];
   };
 
-  systemd.user.services.buildkite-agent = {
+  systemd.services.buildkite-agent = {
     wantedBy = [ "multi-user.target" ];
     after = [ "network.target" ];
+    environment = {
+      HOME = "/home/bk";
+    };
+    path = [
+      pkgs.buildkite-agent
+      pkgs.bash
+      pkgs.nix
+      "/run/wrappers/bin"
+      "/etc/profiles/per-user/bk/bin"
+      "/run/current-system/sw/bin"
+    ];
     preStart = ''
-      set -eu
-      echo here1 > /home/bk/rbb
+      set -u
       echo HOME=$HOME > /home/bk/rbb
       cat > "$HOME/buildkite-agent.cfg" <<EOF
-      : token="$(cat /run/keys/buildkite-agent-token)"
-      token=blah2
+      token="$(cat /run/keys/buildkite-agent-token)"
       name="bk1-%spawn"
       spawn=3
       priority=5
@@ -80,13 +95,12 @@ in
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF
-      echo here2 > /home/bk/rbb
     '';
     serviceConfig = {
       User = "bk";
       Group = "keys";
-      SupplementaryGroups = "keys docker";
-      ExecStart = "buildkite-agent start --config $HOME/buildkite-agent.cfg";
+      SupplementaryGroups = "docker";
+      ExecStart = buildkiteLaunch;
       RestartSec = 5;
       Restart = "on-failure";
       TimeoutSec = 10;
