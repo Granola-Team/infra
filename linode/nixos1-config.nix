@@ -22,10 +22,10 @@
     zoxide
   ];
 
-  virtualisation.podman = {
+  virtualisation.docker = {
     enable = true;
-    dockerCompat = true;
-    autoPrune.enable = true;
+    rootless.enable = true;
+    rootless.setSocketVariable = true;
   };
 
   services.openssh = {
@@ -66,20 +66,11 @@
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
   ];
-  users.users.buildkite-agent-bk1 = {
-    subGidRanges = [{
-      count = 65536;
-      startGid = 100000;
-    }];
-    subUidRanges = [{
-      count = 65536;
-      startUid = 100000;
-    }];
-  };
+  users.users.buildkite-agent-bk1.extraGroups = [ "docker" ];
   users.users.granola = {
     isNormalUser = true;
     createHome = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "docker" ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];
@@ -88,7 +79,7 @@
   users.users.robinbb = {
     isNormalUser = true;
     createHome = true;
-    extraGroups = [ "wheel" ];  # Enable ‘sudo’.
+    extraGroups = [ "wheel" "docker" ];  # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];
