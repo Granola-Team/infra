@@ -79,9 +79,9 @@ in
       pkgs.buildkite-agent
       pkgs.bash
       pkgs.nix
-      "/run/wrappers/bin"
-      "/etc/profiles/per-user/bk/bin"
-      "/run/current-system/sw/bin"
+      "/run/wrappers"
+      "/etc/profiles/per-user/bk"
+      "/run/current-system/sw"
     ];
     preStart = ''
       set -u
