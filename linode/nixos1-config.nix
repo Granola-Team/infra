@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [ 
+  imports = [
     ./nixos1-ext4-hardware-config.nix
   ];
 
@@ -24,8 +24,8 @@
 
   virtualisation.docker = {
     enable = true;
-    rootless.enable = true;
-    rootless.setSocketVariable = true;
+    # rootless.enable = true;
+    # rootless.setSocketVariable = true;
   };
 
   services.openssh = {
@@ -63,6 +63,9 @@
 
   security.sudo.wheelNeedsPassword = false;
 
+  programs.zsh.enable = true;
+
+  users.defaultUserShell = pkgs.zsh;
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
   ];
@@ -78,6 +81,7 @@
   };
   users.users.robinbb = {
     isNormalUser = true;
+    useDefaultShell = true;
     createHome = true;
     extraGroups = [ "wheel" "docker" ];  # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
