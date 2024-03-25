@@ -1,11 +1,12 @@
 { config, lib, pkgs, ... }:
 let
+  environmentHookScript = pkgs.writeScript "buildkite-env-hook" ''
+    NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
+    export NETLIFY_AUTH_TOKEN
+  '';
   hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
     mkdir $out
-    cat > $out/environment << EOF
-      NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
-      export NETLIFY_AUTH_TOKEN
-    EOF
+    ln -s ${environmentHookScript} $out/environment
   '';
   buildkiteLaunch = pkgs.writeScript "buildkite-agent-launch" ''
     #!/bin/sh
