@@ -5,33 +5,19 @@ set -x
 set -eu
 set -o pipefail
 
-build() {
-  nixos-rebuild build --upgrade-all
-}
+# export NIXOS_HOST='root@172.105.102.110'
+# export NIXOS_CONFIG="$(pwd)"/nixos1-config.nix
+export TARGET='root@172.234.120.192'
+export CONFIG=nixos-builder-2
 
-switch() {
-  nixos-rebuild switch \
-    --target-host "$NIXOS_HOST" \
-    --use-remote-sudo
-}
 
-export NIXOS_HOST='root@172.105.102.110'
-export NIXOS_CONFIG="$(pwd)"/nixos1-config.nix
-# NIXOS_HOST='granola@192.53.120.145'
-# NIXOS_CONFIG="$(pwd)"/nixos2-config.nix \
-
-build
-
-ssh root@172.105.102.110 "
-  echo $BUILDKITE_AGENT_TOKEN > /run/keys/buildkite-agent-token &&
-  echo $NETLIFY_AUTH_TOKEN > /run/keys/netlify-auth-token
-"
-
-switch
-
-ssh root@172.105.102.110 "
+scp "$CONFIG"* "$TARGET":
+ssh "$TARGET" "
+  echo ${BUILDKITE_AGENT_TOKEN} > /run/keys/buildkite-agent-token &&
+  echo ${NETLIFY_AUTH_TOKEN} > /run/keys/netlify-auth-token &&
+  nixos-rebuild switch -I nixos-config=${CONFIG}-config.nix &&
   chown bk:keys /run/keys/buildkite-agent-token &&
   chown bk:keys /run/keys/netlify-auth-token &&
-  chmod 0400 /run/keys/buildkite-agent-token
+  chmod 0400 /run/keys/buildkite-agent-token &&
   chmod 0400 /run/keys/netlify-auth-token
 "
