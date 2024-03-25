@@ -88,7 +88,7 @@ in
       token="$(cat /run/keys/buildkite-agent-token)"
       name="bk1-%spawn"
       spawn=3
-      priority=5
+      priority=6
       tags="os=linux,kvm=true,docker=true,xwindows=false"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
