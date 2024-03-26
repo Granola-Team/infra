@@ -27,7 +27,6 @@ in
   environment.systemPackages = with pkgs; [
     docker-compose
     git
-    mosh
     neovim
     tmux
 
@@ -53,6 +52,7 @@ in
   security.sudo.wheelNeedsPassword = false;
 
   programs.zsh.enable = true;
+  programs.mosh.enable = true;
 
   users.defaultUserShell = pkgs.zsh;
   users.users.root.openssh.authorizedKeys.keys = [
