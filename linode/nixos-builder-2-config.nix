@@ -7,10 +7,10 @@ let
     if [ -z $BUILDKITE_ENV_FILE ]; then
       echo "No BUILDKITE_ENV_FILE variable set. Env:"
       env
-    else
-      echo BUILDKITE_ENV_FILE="$BUILDKITE_ENV_FILE"
-      echo Contents:
-      cat "$BUILDKITE_ENV_FILE"
+    # else
+    #   echo BUILDKITE_ENV_FILE="$BUILDKITE_ENV_FILE"
+    #   echo Contents:
+    #   cat "$BUILDKITE_ENV_FILE"
     fi
   '';
 
