@@ -2,6 +2,15 @@
 let
   hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
     mkdir $out
+    cat > $out/pre-bootstrap << EOF
+      # For debugging
+      echo "$BUILDKITE_ENV_FILE"
+      cat "$BUILDKITE_ENV_FILE"
+    EOF
+    cat > $out/pre-checkout << EOF
+      BUILDKITE_GIT_CLEAN_FLAGS='-ffdx --exclude=rust/target'
+      export BUILDKITE_GIT_CLEAN_FLAGS
+    EOF
     cat > $out/environment << EOF
       NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
       export NETLIFY_AUTH_TOKEN
