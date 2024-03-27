@@ -1,31 +1,43 @@
 { config, lib, pkgs, ... }:
 let
+  buildkitePreBootstrap = pkgs.writeScript "buildkite-pre-bootstrap" ''
+    #! /bin/sh
+    set -e
+    # For debugging:
+    if [ -z $BUILDKITE_ENV_FILE ]; then
+      echo "No BUILDKITE_ENV_FILE variable set. Env:"
+      env
+    else
+      echo BUILDKITE_ENV_FILE="$BUILDKITE_ENV_FILE"
+      echo Contents:
+      cat "$BUILDKITE_ENV_FILE"
+    fi
+  '';
+
+  buildkiteLaunch = pkgs.writeScript "buildkite-agent-launch" ''
+    #!/bin/sh
+    set -eu
+    buildkite-agent start --config "$HOME"/buildkite-agent.cfg
+  '';
+
+  netlifyAuthTokenScript = pkgs.writeScript "netlify-auth-token" ''
+    NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
+    export NETLIFY_AUTH_TOKEN
+  '';
+
   hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
     mkdir $out
     
-    cat > $out/pre-bootstrap << EOF
-    #! /bin/sh
-    # For debugging:
-    echo BUILDKITE_ENV_FILE="$BUILDKITE_ENV_FILE"
-    cat "$BUILDKITE_ENV_FILE"
-    EOF
-    chmod +x $out/pre-bootstrap
+    ln -s ${buildkitePreBootstrap} $out/pre-bootstrap
 
     cat > $out/pre-checkout << EOF
     BUILDKITE_GIT_CLEAN_FLAGS='-ffdx --exclude=rust/target'
     export BUILDKITE_GIT_CLEAN_FLAGS
     EOF
 
-    cat > $out/environment << EOF
-    NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
-    export NETLIFY_AUTH_TOKEN
-    EOF
+    ln -s ${netlifyAuthTokenScript} $out/environment
   '';
-  buildkiteLaunch = pkgs.writeScript "buildkite-agent-launch" ''
-    #!/bin/sh
-    set -eu
-    buildkite-agent start --config "$HOME"/buildkite-agent.cfg
-  '';
+
 in
 {
   imports = [
