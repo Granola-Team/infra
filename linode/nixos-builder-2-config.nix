@@ -114,7 +114,7 @@ in
       name="bk2-%spawn"
       spawn=4
       priority=10
-      tags="os=linux,kvm=false,docker=true,xwindows=false"
+      tags="nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,kvm=false,docker=true,xwindows=false"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF
