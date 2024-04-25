@@ -112,7 +112,7 @@ in
       name="bk1-%spawn"
       spawn=3
       priority=5
-      tags="os=linux,docker=true,xwindows=false,agent-name=bk1,deployment=production,mina-log-storage=true"
+      tags="nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false,mina-log-storage=true"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF
