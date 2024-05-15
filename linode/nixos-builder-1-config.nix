@@ -168,6 +168,15 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJrN7T11bia+XlHEOW7DiWyL8iJitys6RjGM4gZXpFVK"
     ];
   };
+  users.users.n1tranquilla = {
+    isNormalUser = true;
+    useDefaultShell = true;
+    createHome = true;
+    extraGroups = [ "wheel" "docker" ];  # Enable ‘sudo’.
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILlvbrQLfRCNxi9eprfKiJeT/y2cJ1ix4jwR4RhDqFHK"
+    ];
+  };
   users.users.robinbb = {
     isNormalUser = true;
     useDefaultShell = true;
