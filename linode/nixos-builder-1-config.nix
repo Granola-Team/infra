@@ -50,6 +50,9 @@ in
 
   networking.hostName = "nixos-builder-1";
 
+  # For the mina-indexer:
+  networking.firewall.allowedTCPPorts = [ 8080 ];
+
   environment.systemPackages = with pkgs; [
     docker-compose
     git
