@@ -51,10 +51,26 @@ in
   networking.hostName = "nixos-builder-1";
 
   # For the mina-indexer:
-  networking.firewall.allowedTCPPorts = [ 8080 ];
+  #
+  # First, run:
+  # nix-env -iA nixos.cloudflared
+  # cloudflared tunnel login
+  # cloudflared tunnel token --cred-file /root/.cloudflared/tunnel.json nixos-builder-1
+  #
+  services.cloudflared = {
+    enable = true;
+    user = "root";
+    tunnels = {
+      "950210ce-d5a3-477e-b4e0-2b097732110c" = {
+        credentialsFile = "${config.users.users.root.home}/.cloudflared/tunnel.json";
+        default = "http_status:404";
+      };
+    };
+  };
 
   environment.systemPackages = with pkgs; [
     docker-compose
+    cloudflared
     git
     neovim
     tmux
@@ -115,7 +131,7 @@ in
       name="bk1-%spawn"
       spawn=3
       priority=5
-      tags="nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false,mina-log-storage=true"
+      tags="production=true,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false,mina-log-storage=true"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF
