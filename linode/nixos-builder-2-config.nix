@@ -20,9 +20,13 @@ let
     buildkite-agent start --config "$HOME"/buildkite-agent.cfg
   '';
 
-  netlifyAuthTokenScript = pkgs.writeScript "netlify-auth-token" ''
+  secretsImportScript = pkgs.writeScript "secrets-import" ''
     NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
     export NETLIFY_AUTH_TOKEN
+    CLOUDFLARE_ACCOUNT_ID="$(cat /run/keys/cloudflare-account-id)"
+    export CLOUDFLARE_ACCOUNT_ID
+    CLOUDFLARE_API_TOKEN="$(cat /run/keys/cloudflare-api-token)"
+    export CLOUDFLARE_API_TOKEN
   '';
 
   hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
@@ -35,7 +39,7 @@ let
     export BUILDKITE_GIT_CLEAN_FLAGS
     EOF
 
-    ln -s ${netlifyAuthTokenScript} $out/environment
+    ln -s ${secretsImportScript} $out/environment
   '';
 
 in
@@ -114,7 +118,7 @@ in
       name="bk2-%spawn"
       spawn=4
       priority=10
-      tags="nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,kvm=false,docker=true,xwindows=false"
+      tags="production=false,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false,mina-log-storage=false,kvm=true"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF

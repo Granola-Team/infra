@@ -8,20 +8,26 @@ set -o pipefail
 # export NIXOS_HOST='root@172.105.102.110'
 # export NIXOS_CONFIG="$(pwd)"/nixos1-config.nix
 
-export TARGET='root@172.105.7.231'
-export CONFIG=nixos-builder-1
+#export TARGET='root@172.105.7.231'
+#export CONFIG=nixos-builder-1
 
-# export TARGET='root@172.234.120.192'
-# export CONFIG=nixos-builder-2
+export TARGET='root@172.234.120.192'
+export CONFIG=nixos-builder-2
 
 scp "$CONFIG"* "$TARGET":
 ssh "$TARGET" "
   systemctl stop buildkite-agent.service
   echo ${BUILDKITE_AGENT_TOKEN} > /run/keys/buildkite-agent-token &&
   echo ${NETLIFY_AUTH_TOKEN} > /run/keys/netlify-auth-token &&
+  echo ${CLOUDFLARE_ACCOUNT_ID} > /run/keys/cloudflare-account-id &&
+  echo ${CLOUDFLARE_API_TOKEN} > /run/keys/cloudflare-api-token &&
   nixos-rebuild switch -I nixos-config=${CONFIG}-config.nix &&
   chown bk:keys /run/keys/buildkite-agent-token &&
   chown bk:keys /run/keys/netlify-auth-token &&
+  chown bk:keys /run/keys/cloudflare-account-id &&
+  chown bk:keys /run/keys/cloudflare-api-token &&
   chmod 0400 /run/keys/buildkite-agent-token &&
-  chmod 0400 /run/keys/netlify-auth-token
+  chmod 0400 /run/keys/netlify-auth-token &&
+  chmod 0400 /run/keys/cloudflare-account-id &&
+  chmod 0400 /run/keys/cloudflare-api-token
 "
