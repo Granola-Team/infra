@@ -45,7 +45,7 @@ let
 in
 {
   imports = [
-    ./nixos-builder-2-ext4-hardware-config.nix
+    ./hardware.nix
   ];
 
   boot.loader.grub.enable = true;
@@ -115,10 +115,10 @@ in
       set -u
       cat > "$HOME/buildkite-agent.cfg" <<EOF
       token="$(cat /run/keys/buildkite-agent-token)"
-      name="bk2-%spawn"
-      spawn=4
+      name="builder-%spawn"
+      spawn=5
       priority=10
-      tags="production=false,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false,mina-log-storage=false,kvm=true"
+      tags="production=false,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false,mina-logs=false,kvm=true"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF

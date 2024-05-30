@@ -17,6 +17,10 @@
     { device = "/dev/sda";
       fsType = "ext4";
     };
+#  fileSystems."/mnt/mina-prod" =
+#    { device = "/dev/disk/by-id/scsi-0Linode_Volume_mina-prod";
+#      fsType = "ext4";
+#    };
 
   swapDevices = [ ];
 

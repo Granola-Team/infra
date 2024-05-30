@@ -5,7 +5,7 @@ pkgs.mkShell {
  buildInputs = [
     pkgs.bash
     pkgs.cacert
-    pkgs.nixos-rebuild
+    pkgs.openssh
   ];
 
   shellHook = ''

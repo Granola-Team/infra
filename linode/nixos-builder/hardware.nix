@@ -17,8 +17,8 @@
     { device = "/dev/sda";
       fsType = "ext4";
     };
-  fileSystems."/mnt/mina-log-storage" =
-    { device = "/dev/disk/by-id/scsi-0Linode_Volume_mina-log-storage";
+  fileSystems."/mnt/mina-logs" =
+    { device = "/dev/disk/by-id/scsi-0Linode_Volume_mina-logs";
       fsType = "ext4";
     };
 
