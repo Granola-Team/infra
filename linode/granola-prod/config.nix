@@ -133,7 +133,7 @@ in
       cat > "$HOME/buildkite-agent.cfg" <<EOF
       token="$(cat /run/keys/buildkite-agent-token)"
       name="prod-%spawn"
-      spawn=4
+      spawn=3
       priority=5
       tags="production=true,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false,mina-logs=false,kvm=false"
       build-path="$HOME/builds"
@@ -160,25 +160,6 @@ in
     extraGroups = [ "wheel" "docker" ];  # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPwpp6p5298n5Ffk7i33uAPVLFdYLbDJFAYPz/9xHjHN"
-    ];
-  };
-  users.users.trevorbernard = {
-    isNormalUser = true;
-    useDefaultShell = true;
-    createHome = true;
-    extraGroups = [ "wheel" "docker" ];  # Enable ‘sudo’.
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHynx+wu6p1AVG8wbSKCALE+q6tH5e1gxCikrvoY0dJE"
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJrN7T11bia+XlHEOW7DiWyL8iJitys6RjGM4gZXpFVK"
-    ];
-  };
-  users.users.n1tranquilla = {
-    isNormalUser = true;
-    useDefaultShell = true;
-    createHome = true;
-    extraGroups = [ "wheel" "docker" ];  # Enable ‘sudo’.
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILlvbrQLfRCNxi9eprfKiJeT/y2cJ1ix4jwR4RhDqFHK"
     ];
   };
   users.users.robinbb = {
