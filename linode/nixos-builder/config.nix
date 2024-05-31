@@ -52,7 +52,7 @@ in
   boot.loader.grub.device = "nodev";
   boot.tmp.cleanOnBoot = true;
 
-  networking.hostName = "nixos-builder-2";
+  networking.hostName = "nixos-builder";
 
   environment.systemPackages = with pkgs; [
     docker-compose
@@ -134,16 +134,6 @@ in
       TimeoutStopSec = "2 min";
       KillMode = "mixed";
     };
-  };
-
-  users.users.granola = {
-    isNormalUser = true;
-    createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
-    ];
-    linger = true;
   };
   users.users.robinbb = {
     isNormalUser = true;
