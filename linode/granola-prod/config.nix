@@ -77,7 +77,6 @@ in
   };
 
   environment.systemPackages = with pkgs; [
-    docker-compose
     cloudflared
     git
     neovim
@@ -88,10 +87,6 @@ in
     starship
     zoxide
   ];
-
-  virtualisation.docker = {
-    enable = true;
-  };
 
   services.openssh = {
     enable = true;
@@ -113,7 +108,7 @@ in
   users.users.bk = {
     isNormalUser = true;
     createHome = true;
-    extraGroups = [ "docker" "keys" ];
+    extraGroups = [ "keys" ];
     shell = pkgs.bash;
     packages = [ pkgs.buildkite-agent pkgs.bash pkgs.nix ];
   };
@@ -139,7 +134,7 @@ in
       name="prod-%spawn"
       spawn=3
       priority=5
-      tags="production=true,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false,mina-logs=false,kvm=false"
+      tags="production=true,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=false,xwindows=false,mina-logs=false,kvm=false"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF
@@ -147,7 +142,6 @@ in
     serviceConfig = {
       User = "bk";
       Group = "keys";
-      SupplementaryGroups = "docker";
       ExecStart = buildkiteLaunch;
       RestartSec = 5;
       Restart = "on-failure";
@@ -161,7 +155,7 @@ in
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" ];  # Enable ‘sudo’.
+    extraGroups = [ "wheel" ];  # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPwpp6p5298n5Ffk7i33uAPVLFdYLbDJFAYPz/9xHjHN"
     ];
@@ -170,7 +164,7 @@ in
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];  # Enable ‘sudo’.
+    extraGroups = [ "wheel" "keys" ];  # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];
