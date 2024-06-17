@@ -7,10 +7,6 @@ let
     if [ -z $BUILDKITE_ENV_FILE ]; then
       echo "No BUILDKITE_ENV_FILE variable set. Env:"
       env
-    # else
-    #   echo BUILDKITE_ENV_FILE="$BUILDKITE_ENV_FILE"
-    #   echo Contents:
-    #   cat "$BUILDKITE_ENV_FILE"
     fi
   '';
 
@@ -21,6 +17,7 @@ let
   '';
 
   secretsImportScript = pkgs.writeScript "secrets-import" ''
+    set -eu
     NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
     export NETLIFY_AUTH_TOKEN
     CLOUDFLARE_ACCOUNT_ID="$(cat /run/keys/cloudflare-account-id)"
@@ -66,11 +63,7 @@ in
     zoxide
   ];
 
-  virtualisation.docker = {
-    enable = true;
-    # rootless.enable = true;
-    # rootless.setSocketVariable = true;
-  };
+  virtualisation.docker.enable = true;
 
   services.openssh = {
     enable = true;
@@ -116,9 +109,9 @@ in
       cat > "$HOME/buildkite-agent.cfg" <<EOF
       token="$(cat /run/keys/buildkite-agent-token)"
       name="builder-%spawn"
-      spawn=5
+      spawn=3
       priority=100
-      tags="production=false,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false,mina-log-storage=true,mina-logs=true,kvm=true"
+      tags="production=false,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false,mina-logs=true"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF
@@ -135,6 +128,7 @@ in
       KillMode = "mixed";
     };
   };
+
   users.users.robinbb = {
     isNormalUser = true;
     useDefaultShell = true;
@@ -142,6 +136,15 @@ in
     extraGroups = [ "wheel" "docker" "keys" ];  # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
+    ];
+  };
+  users.users.jhult = {
+    isNormalUser = true;
+    useDefaultShell = true;
+    createHome = true;
+    extraGroups = [ "wheel" "docker" "keys" ];  # Enable ‘sudo’.
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPwpp6p5298n5Ffk7i33uAPVLFdYLbDJFAYPz/9xHjHN"
     ];
   };
 

@@ -7,10 +7,6 @@ let
     if [ -z $BUILDKITE_ENV_FILE ]; then
       echo "No BUILDKITE_ENV_FILE variable set. Env:"
       env
-    # else
-    #   echo BUILDKITE_ENV_FILE="$BUILDKITE_ENV_FILE"
-    #   echo Contents:
-    #   cat "$BUILDKITE_ENV_FILE"
     fi
   '';
 
@@ -21,6 +17,8 @@ let
   '';
 
   secretsImportScript = pkgs.writeScript "secrets-import" ''
+    #! /bin/sh
+    set -eu
     NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
     export NETLIFY_AUTH_TOKEN
     CLOUDFLARE_ACCOUNT_ID="$(cat /run/keys/cloudflare-account-id)"
@@ -39,7 +37,7 @@ let
     ln -s ${buildkitePreBootstrap} $out/pre-bootstrap
 
     cat > $out/pre-checkout << EOF
-    BUILDKITE_GIT_CLEAN_FLAGS='-ffdx --exclude=rust/target'
+    BUILDKITE_GIT_CLEAN_FLAGS='-ffdx'
     export BUILDKITE_GIT_CLEAN_FLAGS
     EOF
 
@@ -132,8 +130,8 @@ in
       cat > "$HOME/buildkite-agent.cfg" <<EOF
       token="$(cat /run/keys/buildkite-agent-token)"
       name="prod-%spawn"
-      spawn=3
-      priority=5
+      spawn=2
+      priority=1
       tags="production=true,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=false,xwindows=false,mina-logs=false,kvm=false"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
