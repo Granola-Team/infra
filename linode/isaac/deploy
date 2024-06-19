@@ -1,0 +1,9 @@
+#! /usr/bin/env bash
+
+set -x
+set -euo pipefail
+
+TARGET='root@172.105.102.159'
+
+scp *.nix "$TARGET":
+ssh "$TARGET" "nixos-rebuild boot -I nixos-config=config.nix"
