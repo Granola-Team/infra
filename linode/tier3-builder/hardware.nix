@@ -17,12 +17,11 @@
     { device = "/dev/sda";
       fsType = "ext4";
     };
-  fileSystems."/mnt/mina-prod" =
-    { device = "/dev/disk/by-id/scsi-0Linode_Volume_mina-indexer-prod";
-      fsType = "ext4";
-      noCheck = true;
-      options = "defaults,noatime,nofail";
-    };
+#  fileSystems."/mnt/mina-logs" =
+#    { device = "/dev/disk/by-id/scsi-0Linode_Volume_mina-logs";
+#      fsType = "ext4";
+#    };
+
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
