@@ -27,5 +27,6 @@ ssh "$TARGET" "
   chmod 0400 /run/keys/cloudflare-api-token &&
   chmod 0400 /run/keys/linode-access-key &&
   chmod 0400 /run/keys/linode-secret-key &&
+  nixos-rebuild boot -I nixos-config=config.nix &&
   :
 "

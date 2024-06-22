@@ -115,7 +115,7 @@ in
       name="builder-%spawn"
       spawn=3
       priority=100
-      tags="production=false,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false,mina-logs=true"
+      tags="production=false,nix=true,tier1=true,tier2=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF
