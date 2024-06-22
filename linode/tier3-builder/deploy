@@ -14,7 +14,7 @@ ssh "$TARGET" "
   echo ${CLOUDFLARE_API_TOKEN} > /run/keys/cloudflare-api-token &&
   echo ${LINODE_OBJ_ACCESS_KEY} > /run/keys/linode-access-key &&
   echo ${LINODE_OBJ_SECRET_KEY} > /run/keys/linode-secret-key &&
-  nixos-rebuild boot -I nixos-config=config.nix &&
+  nixos-rebuild switch -I nixos-config=config.nix &&
   chown bk:keys /run/keys/buildkite-agent-token &&
   chown bk:keys /run/keys/netlify-auth-token &&
   chown bk:keys /run/keys/cloudflare-account-id &&

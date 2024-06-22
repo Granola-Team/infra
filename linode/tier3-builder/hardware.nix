@@ -17,10 +17,12 @@
     { device = "/dev/sda";
       fsType = "ext4";
     };
-#  fileSystems."/mnt/mina-logs" =
-#    { device = "/dev/disk/by-id/scsi-0Linode_Volume_mina-logs";
-#      fsType = "ext4";
-#    };
+  fileSystems."/mnt/mina-indexer-tier3" =
+    { device = "/dev/disk/by-id/scsi-0Linode_Volume_mina-indexer-tier3";
+      fsType = "ext4";
+      noCheck = true;
+      options = [ "defaults" "noatime" "nofail" ];
+    };
 
   swapDevices = [ ];
 
