@@ -20,6 +20,8 @@
   fileSystems."/mnt/mina-logs" =
     { device = "/dev/disk/by-id/scsi-0Linode_Volume_mina-logs";
       fsType = "ext4";
+      noCheck = true;
+      options = "defaults,noatime,nofail";
     };
 
   swapDevices = [ ];
