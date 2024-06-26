@@ -94,6 +94,9 @@ in
   };
 
   security.sudo.wheelNeedsPassword = false;
+  security.pam.loginLimits = [
+    { domain = "*"; item = "nofile"; type = "-"; value = "65000"; }
+  ];
 
   programs.zsh.enable = true;
   programs.mosh.enable = true;
