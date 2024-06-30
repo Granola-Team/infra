@@ -78,7 +78,7 @@ in
 
   security.sudo.wheelNeedsPassword = false;
   security.pam.loginLimits = [
-    { domain = "*"; item = "nofile"; type = "-"; value = "65000"; }
+    { domain = "*"; item = "nofile"; type = "-"; value = "1234567"; }
   ];
 
   programs.zsh.enable = true;
@@ -116,7 +116,7 @@ in
       cat > "$HOME/buildkite-agent.cfg" <<EOF
       token="$(cat /run/keys/buildkite-agent-token)"
       name="tier3-builder-%spawn"
-      spawn=3
+      spawn=2
       priority=100
       tags="production=false,tier1=false,tier2=false,tier3=true,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false"
       build-path="$HOME/builds"

@@ -95,7 +95,7 @@ in
 
   security.sudo.wheelNeedsPassword = false;
   security.pam.loginLimits = [
-    { domain = "*"; item = "nofile"; type = "-"; value = "65000"; }
+    { domain = "*"; item = "nofile"; type = "-"; value = "512000"; }
   ];
 
   programs.zsh.enable = true;
