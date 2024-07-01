@@ -133,6 +133,7 @@ in
       TimeoutSec = 10;
       TimeoutStopSec = "2 min";
       KillMode = "mixed";
+      LimitNOFILE = 123456;
     };
   };
 

@@ -95,7 +95,7 @@ in
 
   security.sudo.wheelNeedsPassword = false;
   security.pam.loginLimits = [
-    { domain = "*"; item = "nofile"; type = "-"; value = "512000"; }
+    { domain = "*"; item = "nofile"; type = "-"; value = "1234567"; }
   ];
 
   programs.zsh.enable = true;
@@ -135,7 +135,7 @@ in
       name="prod-%spawn"
       spawn=2
       priority=1
-      tags="production=true,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=false,xwindows=false,mina-logs=false,kvm=false"
+      tags="production=true,tier1=false,tier2=false,tier3=false,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=false,xwindows=false"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF
@@ -149,6 +149,7 @@ in
       TimeoutSec = 10;
       TimeoutStopSec = "2 min";
       KillMode = "mixed";
+      LimitNOFILE = 123456;
     };
   };
 
