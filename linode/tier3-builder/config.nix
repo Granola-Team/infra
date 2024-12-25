@@ -32,7 +32,7 @@ let
 
   hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
     mkdir $out
-    
+
     ln -s ${buildkitePreBootstrap} $out/pre-bootstrap
 
     cat > $out/pre-checkout << EOF
@@ -58,6 +58,7 @@ in
   environment.systemPackages = with pkgs; [
     docker-compose
     git
+    git-lfs
     neovim
     tmux
 
@@ -83,6 +84,11 @@ in
 
   programs.zsh.enable = true;
   programs.mosh.enable = true;
+  # Git LFS configuration
+  programs.git = {
+    enable = true;
+    lfs.enable = true;
+  };
 
   users.defaultUserShell = pkgs.zsh;
   users.users.root.openssh.authorizedKeys.keys = [
@@ -94,7 +100,7 @@ in
     createHome = true;
     extraGroups = [ "docker" "keys" ];
     shell = pkgs.bash;
-    packages = [ pkgs.buildkite-agent pkgs.bash pkgs.nix ];
+    packages = [ pkgs.buildkite-agent pkgs.bash pkgs.nix pkgs.git-lfs ];
   };
 
   systemd.services.buildkite-agent = {
