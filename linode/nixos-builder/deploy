@@ -9,15 +9,9 @@ scp *.nix "$TARGET":
 ssh "$TARGET" "
   systemctl stop buildkite-agent.service
   echo ${BUILDKITE_AGENT_TOKEN} > /run/keys/buildkite-agent-token &&
-  echo ${LINODE_OBJ_ACCESS_KEY} > /run/keys/linode-access-key &&
-  echo ${LINODE_OBJ_SECRET_KEY} > /run/keys/linode-secret-key &&
   nixos-rebuild switch -I nixos-config=config.nix &&
   chown bk:keys /run/keys/buildkite-agent-token &&
-  chown bk:keys /run/keys/linode-access-key &&
-  chown bk:keys /run/keys/linode-secret-key &&
   chmod 0400 /run/keys/buildkite-agent-token &&
-  chmod 0400 /run/keys/linode-access-key &&
-  chmod 0400 /run/keys/linode-secret-key &&
   nixos-rebuild boot -I nixos-config=config.nix &&
   :
 "

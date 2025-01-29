@@ -9,24 +9,14 @@ scp *.nix "$TARGET":
 ssh "$TARGET" "
   systemctl stop buildkite-agent.service
   echo ${BUILDKITE_AGENT_TOKEN} > /run/keys/buildkite-agent-token &&
-  echo ${NETLIFY_AUTH_TOKEN} > /run/keys/netlify-auth-token &&
   echo ${CLOUDFLARE_ACCOUNT_ID} > /run/keys/cloudflare-account-id &&
   echo ${CLOUDFLARE_API_TOKEN} > /run/keys/cloudflare-api-token &&
-  echo ${LINODE_OBJ_ACCESS_KEY} > /run/keys/linode-access-key &&
-  echo ${LINODE_OBJ_SECRET_KEY} > /run/keys/linode-secret-key &&
   nixos-rebuild switch -I nixos-config=config.nix &&
   chown bk:keys /run/keys/buildkite-agent-token &&
-  chown bk:keys /run/keys/netlify-auth-token &&
   chown bk:keys /run/keys/cloudflare-account-id &&
   chown bk:keys /run/keys/cloudflare-api-token &&
-  chown bk:keys /run/keys/linode-access-key &&
-  chown bk:keys /run/keys/linode-secret-key &&
-  chmod 0400 /run/keys/buildkite-agent-token &&
-  chmod 0400 /run/keys/netlify-auth-token &&
   chmod 0400 /run/keys/cloudflare-account-id &&
   chmod 0400 /run/keys/cloudflare-api-token &&
-  chmod 0400 /run/keys/linode-access-key &&
-  chmod 0400 /run/keys/linode-secret-key &&
   nixos-rebuild boot -I nixos-config=config.nix &&
   :
 "
