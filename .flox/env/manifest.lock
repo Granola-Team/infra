@@ -1,0 +1,143 @@
+{
+  "lockfile-version": 1,
+  "manifest": {
+    "version": 1,
+    "install": {
+      "alejandra": {
+        "pkg-path": "alejandra"
+      }
+    },
+    "hook": {},
+    "profile": {},
+    "options": {
+      "systems": [
+        "aarch64-darwin",
+        "aarch64-linux",
+        "x86_64-darwin",
+        "x86_64-linux"
+      ],
+      "allow": {
+        "licenses": []
+      },
+      "semver": {}
+    }
+  },
+  "packages": [
+    {
+      "attr_path": "alejandra",
+      "broken": false,
+      "derivation": "/nix/store/3xw3py03y8gxcj2c14jasdp7qxsj2ffm-alejandra-3.1.0.drv",
+      "description": "Uncompromising Nix Code Formatter",
+      "install_id": "alejandra",
+      "license": "Unlicense",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
+      "name": "alejandra-3.1.0",
+      "pname": "alejandra",
+      "rev": "852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
+      "rev_count": 744133,
+      "rev_date": "2025-01-26T09:59:49Z",
+      "scrape_date": "2025-01-27T03:28:00Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.1.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/dvkc91avrkqjs80h1rfb4y6ky64kcrj4-alejandra-3.1.0"
+      },
+      "system": "aarch64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "alejandra",
+      "broken": false,
+      "derivation": "/nix/store/8hd4r4m26xwf8c06p1jj2pzmbmv6ks6x-alejandra-3.1.0.drv",
+      "description": "Uncompromising Nix Code Formatter",
+      "install_id": "alejandra",
+      "license": "Unlicense",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
+      "name": "alejandra-3.1.0",
+      "pname": "alejandra",
+      "rev": "852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
+      "rev_count": 744133,
+      "rev_date": "2025-01-26T09:59:49Z",
+      "scrape_date": "2025-01-27T03:28:00Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.1.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/m98fzmjgabqmykw3fcygn8g2wd8l50rq-alejandra-3.1.0"
+      },
+      "system": "aarch64-linux",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "alejandra",
+      "broken": false,
+      "derivation": "/nix/store/vyxs9wgc4rah6rd6vyayyrlq35y58391-alejandra-3.1.0.drv",
+      "description": "Uncompromising Nix Code Formatter",
+      "install_id": "alejandra",
+      "license": "Unlicense",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
+      "name": "alejandra-3.1.0",
+      "pname": "alejandra",
+      "rev": "852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
+      "rev_count": 744133,
+      "rev_date": "2025-01-26T09:59:49Z",
+      "scrape_date": "2025-01-27T03:28:00Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.1.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/4ai5k9nm7xi8bc76b1czgp49hry7vpcp-alejandra-3.1.0"
+      },
+      "system": "x86_64-darwin",
+      "group": "toplevel",
+      "priority": 5
+    },
+    {
+      "attr_path": "alejandra",
+      "broken": false,
+      "derivation": "/nix/store/62ag3qwrc7b5kkypzcsvgk443hjqcdbn-alejandra-3.1.0.drv",
+      "description": "Uncompromising Nix Code Formatter",
+      "install_id": "alejandra",
+      "license": "Unlicense",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
+      "name": "alejandra-3.1.0",
+      "pname": "alejandra",
+      "rev": "852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
+      "rev_count": 744133,
+      "rev_date": "2025-01-26T09:59:49Z",
+      "scrape_date": "2025-01-27T03:28:00Z",
+      "stabilities": [
+        "unstable"
+      ],
+      "unfree": false,
+      "version": "3.1.0",
+      "outputs_to_install": [
+        "out"
+      ],
+      "outputs": {
+        "out": "/nix/store/9gzgviip82ddfvv9dhs1k6am1h45b540-alejandra-3.1.0"
+      },
+      "system": "x86_64-linux",
+      "group": "toplevel",
+      "priority": 5
+    }
+  ]
+}
