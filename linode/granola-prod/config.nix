@@ -33,7 +33,7 @@ let
 
   hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
     mkdir $out
-    
+
     ln -s ${buildkitePreBootstrap} $out/pre-bootstrap
 
     cat > $out/pre-checkout << EOF
@@ -77,6 +77,7 @@ in
   environment.systemPackages = with pkgs; [
     cloudflared
     git
+    git-lfs
     neovim
     tmux
 
@@ -100,6 +101,11 @@ in
 
   programs.zsh.enable = true;
   programs.mosh.enable = true;
+  # Git LFS configuration
+  programs.git = {
+    enable = true;
+    lfs.enable = true;
+  };
 
   users.defaultUserShell = pkgs.zsh;
   users.users.root.openssh.authorizedKeys.keys = [
@@ -111,7 +117,7 @@ in
     createHome = true;
     extraGroups = [ "keys" ];
     shell = pkgs.bash;
-    packages = [ pkgs.buildkite-agent pkgs.bash pkgs.nix ];
+    packages = [ pkgs.buildkite-agent pkgs.bash pkgs.nix pkgs.git-lfs ];
   };
 
   systemd.services.buildkite-agent = {
@@ -169,6 +175,16 @@ in
     extraGroups = [ "wheel" "keys" ];  # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
+    ];
+  };
+
+  users.users.n1tranquilla = {
+    isNormalUser = true;
+    useDefaultShell = true;
+    createHome = true;
+    extraGroups = [ "wheel" "docker" "keys" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILlvbrQLfRCNxi9eprfKiJeT/y2cJ1ix4jwR4RhDqFHK"
     ];
   };
 
