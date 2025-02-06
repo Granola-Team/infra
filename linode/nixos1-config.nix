@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   environmentHookScript = pkgs.writeScript "buildkite-env-hook" ''
     NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
     export NETLIFY_AUTH_TOKEN
@@ -13,8 +17,7 @@ let
     set -eu
     buildkite-agent start --config "$HOME"/buildkite-agent.cfg
   '';
-in
-{
+in {
   imports = [
     ./nixos1-ext4-hardware-config.nix
   ];
@@ -63,14 +66,14 @@ in
   users.users.bk = {
     isNormalUser = true;
     createHome = true;
-    extraGroups = [ "docker" "keys" ];
+    extraGroups = ["docker" "keys"];
     shell = pkgs.bash;
-    packages = [ pkgs.buildkite-agent pkgs.bash pkgs.nix ];
+    packages = [pkgs.buildkite-agent pkgs.bash pkgs.nix];
   };
 
   systemd.services.buildkite-agent = {
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
+    wantedBy = ["multi-user.target"];
+    after = ["network.target"];
     environment = {
       HOME = "/home/bk";
     };
@@ -110,7 +113,7 @@ in
   users.users.granola = {
     isNormalUser = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];
+    extraGroups = ["wheel" "docker" "keys"];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];
@@ -120,14 +123,14 @@ in
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];  # Enable ‘sudo’.
+    extraGroups = ["wheel" "docker" "keys"]; # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.settings.trusted-users = [ "root" "@wheel" ];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.trusted-users = ["root" "@wheel"];
 
   system.stateVersion = "23.11"; # Did NOT change this!
 }

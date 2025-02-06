@@ -1,13 +1,16 @@
-{ config, pkgs, ... }:
 {
-  imports =
-    [ <nixpkgs/nixos/modules/virtualisation/openstack-config.nix>
-    ];
+  config,
+  pkgs,
+  ...
+}: {
+  imports = [
+    <nixpkgs/nixos/modules/virtualisation/openstack-config.nix>
+  ];
 
   users.users.buildkite = {
     isNormalUser = true;
     useDefaultShell = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = ["wheel"];
     autoSubUidGidRange = true;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINBgTr9+Krb77UzfMIIo0iKEfClzlKl82WZupmY6lTVp"
@@ -30,7 +33,7 @@
   users.users.robinbb = {
     isNormalUser = true;
     useDefaultShell = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = ["wheel"];
     autoSubUidGidRange = true;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINBgTr9+Krb77UzfMIIo0iKEfClzlKl82WZupmY6lTVp"
@@ -47,16 +50,16 @@
 
   # Need to figure out how to run this automatically:
   # usermod --add-subuids 100000-165535 --add-subgids 100000-165535 buildkite-agent-gandi-nixos
-#  environment.etc = {
-#    subuid = {
-#      text = "buildkite-agent-gandi-nixos:100000:65536";
-#      mode = "0644";
-#    };
-#    subgid = {
-#      text = "buildkite-agent-gandi-nixos:100000:65536";
-#      mode = "0644";
-#    };
-#  };
+  #  environment.etc = {
+  #    subuid = {
+  #      text = "buildkite-agent-gandi-nixos:100000:65536";
+  #      mode = "0644";
+  #    };
+  #    subgid = {
+  #      text = "buildkite-agent-gandi-nixos:100000:65536";
+  #      mode = "0644";
+  #    };
+  #  };
 
   boot.isContainer = true;
 
