@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   buildkitePreBootstrap = pkgs.writeScript "buildkite-pre-bootstrap" ''
     #! /bin/sh
     set -e
@@ -43,9 +47,7 @@ let
 
     ln -s ${secretsImportScript} $out/environment
   '';
-
-in
-{
+in {
   imports = [
     ./hardware.nix
   ];
@@ -96,7 +98,12 @@ in
 
   security.sudo.wheelNeedsPassword = false;
   security.pam.loginLimits = [
-    { domain = "*"; item = "nofile"; type = "-"; value = "1234567"; }
+    {
+      domain = "*";
+      item = "nofile";
+      type = "-";
+      value = "1234567";
+    }
   ];
 
   programs.zsh.enable = true;
@@ -115,14 +122,14 @@ in
   users.users.bk = {
     isNormalUser = true;
     createHome = true;
-    extraGroups = [ "keys" ];
+    extraGroups = ["keys"];
     shell = pkgs.bash;
-    packages = [ pkgs.buildkite-agent pkgs.bash pkgs.nix pkgs.git-lfs ];
+    packages = [pkgs.buildkite-agent pkgs.bash pkgs.nix pkgs.git-lfs];
   };
 
   systemd.services.buildkite-agent = {
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
+    wantedBy = ["multi-user.target"];
+    after = ["network.target"];
     environment = {
       HOME = "/home/bk";
     };
@@ -163,7 +170,7 @@ in
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" ];  # Enable ‘sudo’.
+    extraGroups = ["wheel"]; # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPwpp6p5298n5Ffk7i33uAPVLFdYLbDJFAYPz/9xHjHN"
     ];
@@ -172,7 +179,7 @@ in
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" "keys" ];  # Enable ‘sudo’.
+    extraGroups = ["wheel" "keys"]; # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];
@@ -182,14 +189,14 @@ in
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];
+    extraGroups = ["wheel" "docker" "keys"];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILlvbrQLfRCNxi9eprfKiJeT/y2cJ1ix4jwR4RhDqFHK"
     ];
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.settings.trusted-users = [ "root" "@wheel" ];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.trusted-users = ["root" "@wheel"];
 
   system.stateVersion = "23.11"; # Did NOT change this!
 }

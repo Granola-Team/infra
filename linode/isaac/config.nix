@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   imports = [
     ./hardware.nix
   ];
@@ -43,7 +47,7 @@
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];  # Enable ‘sudo’.
+    extraGroups = ["wheel" "docker" "keys"]; # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCYRazgzvBpVsVr6IIAF4ERsVW3/z8NeE750FeomSjKiMGfqP8LY76tpojjnQDNV6kmC9xFp3wy59FkYPFFCIr+lagotlpkF4aA/RLgKGDMOSaGgibbJrhawzWqxIACqzO24qNIRlDAhgZ8SitCb3d+0Xfuf61h7Q1vqw1KIa5zcxihd6Sk7IrljF3l1fnMXGw7jIZ/2toaJ8wJS0tvgajkMN/MtHXNWzhFO+z+2IFzhJmlDfYYQYwVkToscmK4TVj6ji/H79xaYRoK9DZYxzbwKY8ac7cms2cRm+Nt+UBzHKFSzocjaBVuDfyx55VJi0TB4V8b756F5hek9giTcezx"
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCjLEdzDUNZxefkwTDm7Q6V+nqLX5/yya7MPxG4Fh12hF9jRq8ywjODNV9PXDkOlyxf0gQK67iS81aX5DzLDtP2T1Q8Irw+XrmutwGEA+cCMFwGfebtesd3CxZd3I47UmWgiD0Ba53JGA2kS0NGBCWj6EUyuMD9a6ZJim8AP4NX8TeB37vtCwpf0WTc6wVUNFx/Ee1xqg/k4bXR2n2rB/FtlkxSwW/EtQvmFqIOa5fMqDDK8LODakjt/WCb3XrMgYcKFXv+nbA+pX1aiNciCtB+lOTYY3lDAL+TvRJpG1sOVKJmzKZCx+CqxDpTcs6P380hsvk+TH/4DllhpMDEOigr"
@@ -51,8 +55,8 @@
     ];
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.settings.trusted-users = [ "root" "@wheel" ];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.trusted-users = ["root" "@wheel"];
 
   system.stateVersion = "23.11"; # Did NOT change this!
 }

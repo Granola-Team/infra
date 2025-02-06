@@ -1,6 +1,9 @@
-{ config, pkgs, ... }:
 {
-  imports = [ ./hardware-configuration.nix ];
+  config,
+  pkgs,
+  ...
+}: {
+  imports = [./hardware-configuration.nix];
 
   # You should only edit the lines below if you know what you are doing.
 
@@ -57,7 +60,7 @@
   users.users.buildkite = {
     isNormalUser = true;
     useDefaultShell = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = ["wheel"];
     autoSubUidGidRange = true;
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINBgTr9+Krb77UzfMIIo0iKEfClzlKl82WZupmY6lTVp"

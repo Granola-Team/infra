@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   buildkitePreBootstrap = pkgs.writeScript "buildkite-pre-bootstrap" ''
     #! /bin/sh
     set -e
@@ -36,9 +40,7 @@ let
 
     ln -s ${secretsImportScript} $out/environment
   '';
-
-in
-{
+in {
   imports = [
     ./hardware.nix
   ];
@@ -89,14 +91,14 @@ in
   users.users.bk = {
     isNormalUser = true;
     createHome = true;
-    extraGroups = [ "docker" "keys" ];
+    extraGroups = ["docker" "keys"];
     shell = pkgs.bash;
-    packages = [ pkgs.buildkite-agent pkgs.bash pkgs.nix pkgs.git-lfs ];
+    packages = [pkgs.buildkite-agent pkgs.bash pkgs.nix pkgs.git-lfs];
   };
 
   systemd.services.buildkite-agent = {
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
+    wantedBy = ["multi-user.target"];
+    after = ["network.target"];
     environment = {
       HOME = "/home/bk";
     };
@@ -137,7 +139,7 @@ in
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];  # Enable ‘sudo’.
+    extraGroups = ["wheel" "docker" "keys"]; # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];
@@ -146,14 +148,14 @@ in
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];  # Enable ‘sudo’.
+    extraGroups = ["wheel" "docker" "keys"]; # Enable ‘sudo’.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPwpp6p5298n5Ffk7i33uAPVLFdYLbDJFAYPz/9xHjHN"
     ];
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.settings.trusted-users = [ "root" "@wheel" ];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.trusted-users = ["root" "@wheel"];
 
   system.stateVersion = "23.11"; # Did NOT change this!
 }
