@@ -28,6 +28,10 @@ let
     export LINODE_OBJ_ACCESS_KEY
     LINODE_OBJ_SECRET_KEY="$(cat /run/keys/linode-secret-key)"
     export LINODE_OBJ_SECRET_KEY
+    GRANOLA_GH_PUBLIC_KEY="$(cat /run/keys/granola-gh-public-key)"
+    export GRANOLA_GH_PUBLIC_KEY
+    GRANOLA_GH_SECRET_KEY="$(cat /run/keys/granola-gh-secret-key)"
+    export GRANOLA_GH_SECRET_KEY
   '';
 
   hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
@@ -159,16 +163,6 @@ in
     extraGroups = [ "wheel" "docker" "keys" ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPwpp6p5298n5Ffk7i33uAPVLFdYLbDJFAYPz/9xHjHN"
-    ];
-  };
-  users.users.trevorbernard = {
-    isNormalUser = true;
-    useDefaultShell = true;
-    createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHynx+wu6p1AVG8wbSKCALE+q6tH5e1gxCikrvoY0dJE"
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJrN7T11bia+XlHEOW7DiWyL8iJitys6RjGM4gZXpFVK"
     ];
   };
   users.users.n1tranquilla = {
