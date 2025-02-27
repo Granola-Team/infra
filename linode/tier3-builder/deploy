@@ -14,8 +14,8 @@ ssh "$TARGET" "
   echo ${CLOUDFLARE_API_TOKEN} > /run/keys/cloudflare-api-token &&
   echo ${LINODE_OBJ_ACCESS_KEY} > /run/keys/linode-access-key &&
   echo ${LINODE_OBJ_SECRET_KEY} > /run/keys/linode-secret-key &&
-  echo ${GRANOLA_GH_PUBLIC_KEY} > /run/keys/granola-gh-public-key &&
-  echo ${GRANOLA_GH_SECRET_KEY} > /run/keys/granola-gh-secret-key &&
+  echo \"${GRANOLA_GH_PUBLIC_KEY}\" > /run/keys/granola-gh-public-key &&
+  echo \"${GRANOLA_GH_SECRET_KEY}\" > /run/keys/granola-gh-secret-key &&
   nixos-rebuild switch -I nixos-config=config.nix &&
   chown bk:keys /run/keys/buildkite-agent-token &&
   chown bk:keys /run/keys/netlify-auth-token &&
@@ -23,6 +23,8 @@ ssh "$TARGET" "
   chown bk:keys /run/keys/cloudflare-api-token &&
   chown bk:keys /run/keys/linode-access-key &&
   chown bk:keys /run/keys/linode-secret-key &&
+  chown bk:keys /run/keys/granola-gh-public-key &&
+  chown bk:keys /run/keys/granola-gh-secret-key &&
   chmod 0400 /run/keys/buildkite-agent-token &&
   chmod 0400 /run/keys/netlify-auth-token &&
   chmod 0400 /run/keys/cloudflare-account-id &&
