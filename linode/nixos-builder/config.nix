@@ -17,11 +17,6 @@ let
   '';
 
   secretsImportScript = pkgs.writeScript "secrets-import" ''
-    set -eu
-    LINODE_OBJ_ACCESS_KEY="$(cat /run/keys/linode-access-key)"
-    export LINODE_OBJ_ACCESS_KEY
-    LINODE_OBJ_SECRET_KEY="$(cat /run/keys/linode-secret-key)"
-    export LINODE_OBJ_SECRET_KEY
   '';
 
   hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
