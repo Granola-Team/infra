@@ -57,6 +57,13 @@ in
     zoxide
   ];
 
+  # Enable Flox system-wide
+  programs.flox = {
+    enable = true;
+    # Configure Flox to use the system's Nix installation
+    useSystemNix = true;
+  };
+
   virtualisation.docker.enable = true;
 
   services.openssh = {
@@ -95,14 +102,7 @@ in
     environment = {
       HOME = "/home/bk";
     };
-    path = [
-      pkgs.buildkite-agent
-      pkgs.bash
-      pkgs.nix
-      "/run/wrappers"
-      "/etc/profiles/per-user/bk"
-      "/run/current-system/sw"
-    ];
+    # The path is now configured in the flake.nix
     preStart = ''
       set -u
       cat > "$HOME/buildkite-agent.cfg" <<EOF
@@ -132,7 +132,7 @@ in
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];  # Enable ‘sudo’.
+    extraGroups = [ "wheel" "docker" "keys" ];  # Enable 'sudo'.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];
@@ -141,13 +141,12 @@ in
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];  # Enable ‘sudo’.
+    extraGroups = [ "wheel" "docker" "keys" ];  # Enable 'sudo'.
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPwpp6p5298n5Ffk7i33uAPVLFdYLbDJFAYPz/9xHjHN"
     ];
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings.trusted-users = [ "root" "@wheel" ];
 
   system.stateVersion = "23.11"; # Did NOT change this!
