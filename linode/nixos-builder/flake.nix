@@ -1,5 +1,5 @@
 {
-  description = "NixOS system flake with flox";
+  description = "NixOS system flake with Flox";
 
   nixConfig = {
     extra-trusted-substituters = ["https://cache.flox.dev"];
@@ -7,9 +7,11 @@
   };
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs = {
+      url = "github:NixOS/nixpkgs?rev=7ffe0edc685f14b8c635e3d6591b0bbb97365e6c";
+    };
     flox = {
-      url = "github:flox/flox/v1.3.15";
+      url = "github:flox/flox?rev=b760d17ef27f6d3c158c02a109b118ba5eb49cc9";
     };
   };
 

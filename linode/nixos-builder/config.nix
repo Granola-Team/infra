@@ -16,9 +16,6 @@ let
     buildkite-agent start --config "$HOME"/buildkite-agent.cfg
   '';
 
-  secretsImportScript = pkgs.writeScript "secrets-import" ''
-  '';
-
   hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
     mkdir $out
 
@@ -29,7 +26,6 @@ let
     export BUILDKITE_GIT_CLEAN_FLAGS
     EOF
 
-    ln -s ${secretsImportScript} $out/environment
   '';
 
 in
