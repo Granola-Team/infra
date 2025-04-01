@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 let
   buildkitePreBootstrap = pkgs.writeScript "buildkite-pre-bootstrap" ''
     #! /bin/sh
@@ -44,20 +44,12 @@ in
     docker-compose
     git
     git-lfs
-    neovim
     tmux
-
-    # Optional goodies
-    direnv
-    starship
-    zoxide
+    inputs.flox.packages.${pkgs.system}.default
   ];
 
-  # Enable Flox system-wide
-  programs.flox = {
-    enable = true;
-    # Configure Flox to use the system's Nix installation
-    useSystemNix = true;
+  environment.variables = {
+    FLOX_USE_SYSTEM_NIX = "1";
   };
 
   virtualisation.docker.enable = true;
@@ -98,7 +90,15 @@ in
     environment = {
       HOME = "/home/bk";
     };
-    # The path is now configured in the flake.nix
+    path = [
+      pkgs.buildkite-agent
+      pkgs.bash
+      pkgs.nix
+      inputs.flox.packages.${pkgs.system}.default
+      "/run/wrappers"
+      "/etc/profiles/per-user/bk"
+      "/run/current-system/sw"
+    ];
     preStart = ''
       set -u
       cat > "$HOME/buildkite-agent.cfg" <<EOF
@@ -106,7 +106,7 @@ in
       name="builder-%spawn"
       spawn=3
       priority=100
-      tags="production=false,nix=true,tier1=true,tier2=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false"
+      tags="production=false,flox=true,nix=true,tier1=true,tier2=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF
@@ -144,6 +144,7 @@ in
   };
 
   nix.settings.trusted-users = [ "root" "@wheel" ];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
 
   system.stateVersion = "23.11"; # Did NOT change this!
 }
