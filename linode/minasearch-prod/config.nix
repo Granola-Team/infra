@@ -12,18 +12,16 @@
 
   networking.hostName = "minasearch-prod";
 
-  # For the mina-indexer:
-  #
-  # First, run:
+  # First, create and configure the tunnel in Cloudflare's dashboard. Then, run:
   # cloudflared tunnel login
-  # cloudflared tunnel token --cred-file /root/.cloudflared/tunnel.json granola-prod
+  # cloudflared tunnel token --cred-file /root/.cloudflared/tunnel.json minasearch-prod
   #
   services.cloudflared = {
     enable = true;
     user = "root";
     tunnels = {
-      "950210ce-d5a3-477e-b4e0-2b097732110c" = {
-        credentialsFile = "${config.users.users.root.home}/.cloudflared/tunnel.json";
+      "e9c4d3b5-04d7-4575-a6a6-986865217ef2" = {
+        credentialsFile = "/run/keys/granola-cloudflare-minasearch-creds-json";
         default = "http_status:404";
       };
     };
