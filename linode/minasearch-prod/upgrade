@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+
+set -x
+set -euo pipefail
+
+# minasearch-prod-blue
+TARGET='root@172.232.152.58'
+
+scp *.nix ../*.nix "$TARGET":
+ssh "$TARGET" "
+  systemctl stop buildkite-agent.service
+  nix-channel --update &&
+  nixos-rebuild build -I nixos-config=config.nix --upgrade &&
+  nixos-rebuild switch -I nixos-config=config.nix --upgrade &&
+  nixos-rebuild boot -I nixos-config=config.nix --upgrade &&
+  :
+"
