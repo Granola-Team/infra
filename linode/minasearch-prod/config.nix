@@ -10,7 +10,7 @@
   boot.loader.grub.device = "nodev";
   boot.tmp.cleanOnBoot = true;
 
-  networking.hostName = "minasearch-prod";
+  networking.hostName = "minasearch-prod-blue";
 
   # First, create and configure the tunnel in Cloudflare's dashboard. Then, run:
   # cloudflared tunnel login
