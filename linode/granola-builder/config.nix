@@ -39,6 +39,10 @@
   };
   programs.mosh.enable = true;
   programs.tmux.enable = true;
+  programs.vim = {
+    enable = true;
+    defaultEditor = true;
+  };
   programs.zsh.enable = true;
 
   nix.settings.trusted-users = [ "root" "@wheel" ];

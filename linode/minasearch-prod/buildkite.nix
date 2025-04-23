@@ -63,10 +63,10 @@ in
     preStart = ''
       set -u
       cat > "$HOME/buildkite-agent.cfg" <<EOF
-      name="minasearch-prod-blue"
+      name="minasearch-prod-green"
       spawn=1
       priority=1
-      tags="minasearch-prod=blue,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos"
+      tags="minasearch-prod=green,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF
