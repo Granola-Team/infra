@@ -15,12 +15,11 @@
   # For the mina-indexer:
   #
   # First, run:
-  # nix-env -iA nixos.cloudflared
   # cloudflared tunnel login
-  # cloudflared tunnel token --cred-file /root/.cloudflared/tunnel.json nixos-builder-1
+  # cloudflared tunnel token --cred-file /root/.cloudflared/tunnel.json granola-prod
   #
   services.cloudflared = {
-    enable = false;
+    enable = true;
     user = "root";
     tunnels = {
       "950210ce-d5a3-477e-b4e0-2b097732110c" = {
@@ -32,6 +31,7 @@
 
   environment.systemPackages = with pkgs; [
     cloudflared
+    vim
   ];
 
   services.openssh = {
