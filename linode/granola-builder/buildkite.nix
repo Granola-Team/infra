@@ -45,7 +45,7 @@ in
     preStart = ''
       set -u
       cat > "$HOME/buildkite-agent.cfg" <<EOF
-      name="builder-%spawn"
+      name="granola-builder-%spawn"
       spawn=3
       priority=100
       tags="production=false,flox=true,nix=true,tier1=true,tier2=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false"
