@@ -46,6 +46,10 @@
     { domain = "*"; item = "nofile"; type = "-"; value = "1234567"; }
   ];
 
+  systemd.tmpfiles.rules = [
+    "d /mnt 0777 root root"
+  ];
+
   programs.git = {
     enable = true;
     lfs.enable = true;
