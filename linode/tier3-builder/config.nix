@@ -13,6 +13,7 @@ let
   buildkiteLaunch = pkgs.writeScript "buildkite-agent-launch" ''
     #!/bin/sh
     set -eu
+    export BUILDKITE_AGENT_TOKEN="$(cat /run/keys/buildkite-agent-token)"
     buildkite-agent start --config "$HOME"/buildkite-agent.cfg
   '';
 
@@ -40,7 +41,7 @@ let
     ln -s ${buildkitePreBootstrap} $out/pre-bootstrap
 
     cat > $out/pre-checkout << EOF
-    BUILDKITE_GIT_CLEAN_FLAGS='-ffdx --exclude=rust/target'
+    BUILDKITE_GIT_CLEAN_FLAGS='-ffdx --exclude=.cargo'
     export BUILDKITE_GIT_CLEAN_FLAGS
     EOF
 
@@ -124,9 +125,8 @@ in
     preStart = ''
       set -u
       cat > "$HOME/buildkite-agent.cfg" <<EOF
-      token="$(cat /run/keys/buildkite-agent-token)"
-      name="tier3-builder-%spawn"
-      spawn=2
+      name="mina-indexer-tier3-builder"
+      spawn=1
       priority=100
       tags="production=false,tier1=false,tier2=false,tier3=true,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false"
       build-path="$HOME/builds"
