@@ -6,6 +6,9 @@ set -euo pipefail
 # minasearch-prod-blue
 TARGET='root@172.232.152.58'
 
+# minasearch-prod-green
+# TARGET='root@172.234.120.192'
+
 scp *.nix ../*.nix "$TARGET":
 ssh "$TARGET" "
   systemctl stop buildkite-agent.service

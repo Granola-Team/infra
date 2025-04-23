@@ -63,7 +63,7 @@ in
     preStart = ''
       set -u
       cat > "$HOME/buildkite-agent.cfg" <<EOF
-      name="minasearch-prod-blue"
+      name="minasearch-prod"
       spawn=1
       priority=1
       tags="minasearch-prod=true,nix=true,os-kernel=linux,os-family=nixos,os-variant=nixos"
