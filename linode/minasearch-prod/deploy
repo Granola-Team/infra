@@ -17,7 +17,6 @@ ssh "$TARGET" "
   :
 "
 ssh "$TARGET" "
-  systemctl stop buildkite-agent.service
   echo "${BUILDKITE_AGENT_TOKEN}" > /run/keys/buildkite-agent-token &&
   chown bk:keys /run/keys/buildkite-agent-token &&
   chmod 0400 /run/keys/buildkite-agent-token &&

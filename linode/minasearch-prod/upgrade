@@ -11,9 +11,13 @@ TARGET='root@172.232.152.58'
 
 scp *.nix ../*.nix "$TARGET":
 ssh "$TARGET" "
-  systemctl stop buildkite-agent.service
+  nix-channel --add https://channels.nixos.org/nixos-24.05 nixos &&
   nix-channel --update &&
   nixos-rebuild build -I nixos-config=config.nix --upgrade &&
+  :
+"
+ssh "$TARGET" "
+  systemctl stop buildkite-agent.service
   nixos-rebuild switch -I nixos-config=config.nix --upgrade &&
   nixos-rebuild boot -I nixos-config=config.nix --upgrade &&
   :
