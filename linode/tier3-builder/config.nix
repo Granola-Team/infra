@@ -62,32 +62,31 @@ in
 
   environment.systemPackages = with pkgs; [
     docker-compose
-    git
-    git-lfs
-    tmux
     vim
   ];
 
+  programs.git = {
+    enable = true;
+    lfs.enable = true;
+  };
+  programs.mosh.enable = true;
+  programs.tmux.enable = true;
+  programs.zsh.enable = true;
+
   virtualisation.docker.enable = true;
+
+  security.sudo.wheelNeedsPassword = false;
+
+  # The large 'nofile' value is required for the mina-indexer.
+  security.pam.loginLimits = [
+    { domain = "*"; item = "nofile"; type = "-"; value = "1234567"; }
+  ];
 
   services.openssh = {
     enable = true;
     settings.PermitRootLogin = "yes";
     settings.PasswordAuthentication = false;
     settings.KbdInteractiveAuthentication = false;
-  };
-
-  security.sudo.wheelNeedsPassword = false;
-  security.pam.loginLimits = [
-    { domain = "*"; item = "nofile"; type = "-"; value = "1234567"; }
-  ];
-
-  programs.zsh.enable = true;
-  programs.mosh.enable = true;
-  # Git LFS configuration
-  programs.git = {
-    enable = true;
-    lfs.enable = true;
   };
 
   users.defaultUserShell = pkgs.zsh;
@@ -100,7 +99,25 @@ in
     createHome = true;
     extraGroups = [ "docker" "keys" ];
     shell = pkgs.bash;
-    packages = [ pkgs.buildkite-agent pkgs.bash pkgs.nix pkgs.git-lfs ];
+    packages = [ pkgs.buildkite-agent ];
+  };
+  users.users.robinbb = {
+    isNormalUser = true;
+    useDefaultShell = true;
+    createHome = true;
+    extraGroups = [ "wheel" "docker" "keys" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
+    ];
+  };
+  users.users.jhult = {
+    isNormalUser = true;
+    useDefaultShell = true;
+    createHome = true;
+    extraGroups = [ "wheel" "docker" "keys" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPwpp6p5298n5Ffk7i33uAPVLFdYLbDJFAYPz/9xHjHN"
+    ];
   };
 
   systemd.services.buildkite-agent = {
@@ -111,9 +128,6 @@ in
     };
     path = [
       pkgs.buildkite-agent
-      pkgs.bash
-      pkgs.nix
-      "/run/wrappers"
       "/etc/profiles/per-user/bk"
       "/run/current-system/sw"
     ];
@@ -140,25 +154,6 @@ in
       KillMode = "mixed";
       LimitNOFILE = 123456;
     };
-  };
-
-  users.users.robinbb = {
-    isNormalUser = true;
-    useDefaultShell = true;
-    createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
-    ];
-  };
-  users.users.jhult = {
-    isNormalUser = true;
-    useDefaultShell = true;
-    createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPwpp6p5298n5Ffk7i33uAPVLFdYLbDJFAYPz/9xHjHN"
-    ];
   };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
