@@ -64,13 +64,8 @@ in
     docker-compose
     git
     git-lfs
-    neovim
     tmux
-
-    # Optional goodies
-    direnv
-    starship
-    zoxide
+    vim
   ];
 
   virtualisation.docker.enable = true;
