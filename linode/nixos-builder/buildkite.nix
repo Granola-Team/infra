@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, ... }:
+{ pkgs, inputs, ... }:
 let
   buildkitePreBootstrap = pkgs.writeScript "buildkite-pre-bootstrap" ''
     #! /bin/sh
@@ -38,10 +38,7 @@ in
     };
     path = [
       pkgs.buildkite-agent
-      pkgs.bash
-      pkgs.nix
       inputs.flox.packages.${pkgs.system}.default
-      "/run/wrappers"
       "/etc/profiles/per-user/bk"
       "/run/current-system/sw"
     ];
@@ -74,6 +71,6 @@ in
     createHome = true;
     extraGroups = [ "docker" "keys" ];
     shell = pkgs.bash;
-    packages = [ pkgs.buildkite-agent pkgs.bash pkgs.nix pkgs.git-lfs ];
+    packages = [ pkgs.buildkite-agent ];
   };
 }

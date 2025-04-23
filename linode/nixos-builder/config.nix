@@ -33,14 +33,13 @@
 
   security.sudo.wheelNeedsPassword = false;
 
-  programs.tmux.enable = true;
-  programs.zsh.enable = true;
-  programs.mosh.enable = true;
-  # Git LFS configuration
   programs.git = {
     enable = true;
     lfs.enable = true;
   };
+  programs.mosh.enable = true;
+  programs.tmux.enable = true;
+  programs.zsh.enable = true;
 
   nix.settings.trusted-users = [ "root" "@wheel" ];
   nix.settings.experimental-features = ["nix-command" "flakes"];
