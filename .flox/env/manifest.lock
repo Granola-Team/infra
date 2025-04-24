@@ -3,8 +3,8 @@
   "manifest": {
     "version": 1,
     "install": {
-      "alejandra": {
-        "pkg-path": "alejandra"
+      "nixfmt-rfc-style": {
+        "pkg-path": "nixfmt-rfc-style"
       }
     },
     "hook": {},
@@ -24,15 +24,15 @@
   },
   "packages": [
     {
-      "attr_path": "alejandra",
+      "attr_path": "nixfmt-rfc-style",
       "broken": false,
-      "derivation": "/nix/store/3xw3py03y8gxcj2c14jasdp7qxsj2ffm-alejandra-3.1.0.drv",
-      "description": "Uncompromising Nix Code Formatter",
-      "install_id": "alejandra",
-      "license": "Unlicense",
+      "derivation": "/nix/store/arrssk1hvyf2kfhgw381az6mm71karq7-nixfmt-unstable-2024-12-04.drv",
+      "description": "Official formatter for Nix code",
+      "install_id": "nixfmt-rfc-style",
+      "license": "MPL-2.0",
       "locked_url": "https://github.com/flox/nixpkgs?rev=852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
-      "name": "alejandra-3.1.0",
-      "pname": "alejandra",
+      "name": "nixfmt-unstable-2024-12-04",
+      "pname": "nixfmt-rfc-style",
       "rev": "852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
       "rev_count": 744133,
       "rev_date": "2025-01-26T09:59:49Z",
@@ -41,27 +41,27 @@
         "unstable"
       ],
       "unfree": false,
-      "version": "3.1.0",
+      "version": "2024-12-04",
       "outputs_to_install": [
         "out"
       ],
       "outputs": {
-        "out": "/nix/store/dvkc91avrkqjs80h1rfb4y6ky64kcrj4-alejandra-3.1.0"
+        "out": "/nix/store/cprmwjkhwshjwqpn6ifpphv9f6iqqf81-nixfmt-unstable-2024-12-04"
       },
       "system": "aarch64-darwin",
       "group": "toplevel",
       "priority": 5
     },
     {
-      "attr_path": "alejandra",
+      "attr_path": "nixfmt-rfc-style",
       "broken": false,
-      "derivation": "/nix/store/8hd4r4m26xwf8c06p1jj2pzmbmv6ks6x-alejandra-3.1.0.drv",
-      "description": "Uncompromising Nix Code Formatter",
-      "install_id": "alejandra",
-      "license": "Unlicense",
+      "derivation": "/nix/store/7fvm69akwcmql8cdxf7r4c9l7ihkdn9j-nixfmt-unstable-2024-12-04.drv",
+      "description": "Official formatter for Nix code",
+      "install_id": "nixfmt-rfc-style",
+      "license": "MPL-2.0",
       "locked_url": "https://github.com/flox/nixpkgs?rev=852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
-      "name": "alejandra-3.1.0",
-      "pname": "alejandra",
+      "name": "nixfmt-unstable-2024-12-04",
+      "pname": "nixfmt-rfc-style",
       "rev": "852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
       "rev_count": 744133,
       "rev_date": "2025-01-26T09:59:49Z",
@@ -70,27 +70,27 @@
         "unstable"
       ],
       "unfree": false,
-      "version": "3.1.0",
+      "version": "2024-12-04",
       "outputs_to_install": [
         "out"
       ],
       "outputs": {
-        "out": "/nix/store/m98fzmjgabqmykw3fcygn8g2wd8l50rq-alejandra-3.1.0"
+        "out": "/nix/store/ldgk5dmbna8sfmxc1fxjz9gc0kpfn0wr-nixfmt-unstable-2024-12-04"
       },
       "system": "aarch64-linux",
       "group": "toplevel",
       "priority": 5
     },
     {
-      "attr_path": "alejandra",
+      "attr_path": "nixfmt-rfc-style",
       "broken": false,
-      "derivation": "/nix/store/vyxs9wgc4rah6rd6vyayyrlq35y58391-alejandra-3.1.0.drv",
-      "description": "Uncompromising Nix Code Formatter",
-      "install_id": "alejandra",
-      "license": "Unlicense",
+      "derivation": "/nix/store/58mw5w8wkm0mh8fnjcl5qknn4rs8bzxg-nixfmt-unstable-2024-12-04.drv",
+      "description": "Official formatter for Nix code",
+      "install_id": "nixfmt-rfc-style",
+      "license": "MPL-2.0",
       "locked_url": "https://github.com/flox/nixpkgs?rev=852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
-      "name": "alejandra-3.1.0",
-      "pname": "alejandra",
+      "name": "nixfmt-unstable-2024-12-04",
+      "pname": "nixfmt-rfc-style",
       "rev": "852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
       "rev_count": 744133,
       "rev_date": "2025-01-26T09:59:49Z",
@@ -99,27 +99,27 @@
         "unstable"
       ],
       "unfree": false,
-      "version": "3.1.0",
+      "version": "2024-12-04",
       "outputs_to_install": [
         "out"
       ],
       "outputs": {
-        "out": "/nix/store/4ai5k9nm7xi8bc76b1czgp49hry7vpcp-alejandra-3.1.0"
+        "out": "/nix/store/lsiffb6piimhmjdfsqq058zr3rl4i06f-nixfmt-unstable-2024-12-04"
       },
       "system": "x86_64-darwin",
       "group": "toplevel",
       "priority": 5
     },
     {
-      "attr_path": "alejandra",
+      "attr_path": "nixfmt-rfc-style",
       "broken": false,
-      "derivation": "/nix/store/62ag3qwrc7b5kkypzcsvgk443hjqcdbn-alejandra-3.1.0.drv",
-      "description": "Uncompromising Nix Code Formatter",
-      "install_id": "alejandra",
-      "license": "Unlicense",
+      "derivation": "/nix/store/qg8gbj4ia04m9fnl54j88xb5pbj076wm-nixfmt-unstable-2024-12-04.drv",
+      "description": "Official formatter for Nix code",
+      "install_id": "nixfmt-rfc-style",
+      "license": "MPL-2.0",
       "locked_url": "https://github.com/flox/nixpkgs?rev=852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
-      "name": "alejandra-3.1.0",
-      "pname": "alejandra",
+      "name": "nixfmt-unstable-2024-12-04",
+      "pname": "nixfmt-rfc-style",
       "rev": "852ff1d9e153d8875a83602e03fdef8a63f0ecf8",
       "rev_count": 744133,
       "rev_date": "2025-01-26T09:59:49Z",
@@ -128,12 +128,12 @@
         "unstable"
       ],
       "unfree": false,
-      "version": "3.1.0",
+      "version": "2024-12-04",
       "outputs_to_install": [
         "out"
       ],
       "outputs": {
-        "out": "/nix/store/9gzgviip82ddfvv9dhs1k6am1h45b540-alejandra-3.1.0"
+        "out": "/nix/store/5437izm22g3084vsh0jmqmazgrdgib5n-nixfmt-unstable-2024-12-04"
       },
       "system": "x86_64-linux",
       "group": "toplevel",

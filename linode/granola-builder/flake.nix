@@ -2,8 +2,8 @@
   description = "NixOS system flake with Flox";
 
   nixConfig = {
-    extra-trusted-substituters = ["https://cache.flox.dev"];
-    extra-trusted-public-keys = ["flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="];
+    extra-trusted-substituters = [ "https://cache.flox.dev" ];
+    extra-trusted-public-keys = [ "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs=" ];
   };
 
   inputs = {
@@ -15,13 +15,19 @@
     };
   };
 
-  outputs = inputs @ { self, nixpkgs, flox, }: {
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        ./config.nix
-      ];
-      specialArgs = {inherit inputs;};
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      flox,
+    }:
+    {
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./config.nix
+        ];
+        specialArgs = { inherit inputs; };
+      };
     };
-  };
 }

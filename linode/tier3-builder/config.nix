@@ -32,7 +32,12 @@
 
   # The large 'nofile' value is required for the mina-indexer.
   security.pam.loginLimits = [
-    { domain = "*"; item = "nofile"; type = "-"; value = "1234567"; }
+    {
+      domain = "*";
+      item = "nofile";
+      type = "-";
+      value = "1234567";
+    }
   ];
 
   services.openssh = {
@@ -42,8 +47,14 @@
     settings.KbdInteractiveAuthentication = false;
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.settings.trusted-users = [ "root" "@wheel" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+  nix.settings.trusted-users = [
+    "root"
+    "@wheel"
+  ];
 
   system.stateVersion = "23.11"; # Did NOT change this!
 }

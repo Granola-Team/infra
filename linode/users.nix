@@ -11,7 +11,11 @@
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];
+    extraGroups = [
+      "wheel"
+      "docker"
+      "keys"
+    ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKgqUmPrZwBkOtlDgkft1yVL0YoDKdTr6lWvsoNUP6yA"
     ];
@@ -20,7 +24,11 @@
     isNormalUser = true;
     useDefaultShell = true;
     createHome = true;
-    extraGroups = [ "wheel" "docker" "keys" ];
+    extraGroups = [
+      "wheel"
+      "docker"
+      "keys"
+    ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPwpp6p5298n5Ffk7i33uAPVLFdYLbDJFAYPz/9xHjHN"
     ];

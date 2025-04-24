@@ -35,7 +35,7 @@ let
     export GRANOLA_GH_SECRET_KEY
   '';
 
-  hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
+  hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" { } ''
     mkdir $out
 
     ln -s ${buildkitePreBootstrap} $out/pre-bootstrap
@@ -52,7 +52,10 @@ in
   users.users.bk = {
     isNormalUser = true;
     createHome = true;
-    extraGroups = [ "docker" "keys" ];
+    extraGroups = [
+      "docker"
+      "keys"
+    ];
     shell = pkgs.bash;
     packages = [ pkgs.buildkite-agent ];
   };

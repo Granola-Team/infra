@@ -26,7 +26,7 @@ let
     export LINODE_OBJ_SECRET_KEY
   '';
 
-  hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" {} ''
+  hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" { } ''
     mkdir $out
 
     ln -s ${buildkitePreBootstrap} $out/pre-bootstrap

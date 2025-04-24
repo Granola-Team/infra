@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   imports = [
     ./hardware.nix
@@ -41,7 +46,12 @@
 
   security.sudo.wheelNeedsPassword = false;
   security.pam.loginLimits = [
-    { domain = "*"; item = "nofile"; type = "-"; value = "1234567"; }
+    {
+      domain = "*";
+      item = "nofile";
+      type = "-";
+      value = "1234567";
+    }
   ];
 
   systemd.tmpfiles.rules = [
@@ -56,8 +66,14 @@
   programs.tmux.enable = true;
   programs.zsh.enable = true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.settings.trusted-users = [ "root" "@wheel" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+  nix.settings.trusted-users = [
+    "root"
+    "@wheel"
+  ];
 
   system.stateVersion = "23.11"; # Do NOT change this!
 }

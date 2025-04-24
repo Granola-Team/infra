@@ -1,4 +1,10 @@
-{ config, lib, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
   imports = [
@@ -45,8 +51,14 @@
   };
   programs.zsh.enable = true;
 
-  nix.settings.trusted-users = [ "root" "@wheel" ];
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.trusted-users = [
+    "root"
+    "@wheel"
+  ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   system.stateVersion = "23.11"; # Did NOT change this!
 }
