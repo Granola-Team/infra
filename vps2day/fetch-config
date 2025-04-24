@@ -1,4 +1,0 @@
-#!/bin/sh
-
-scp root@45.11.182.56:/etc/nixos/configuration.nix .
-scp root@45.11.182.56:/etc/nixos/hardware-configuration.nix .
