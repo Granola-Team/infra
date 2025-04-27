@@ -41,7 +41,7 @@ let
     ln -s ${buildkitePreBootstrap} $out/pre-bootstrap
 
     cat > $out/pre-checkout << EOF
-    BUILDKITE_GIT_CLEAN_FLAGS='-ffdx --exclude=.cargo'
+    BUILDKITE_GIT_CLEAN_FLAGS='-ffdx --exclude=rust/.cargo'
     export BUILDKITE_GIT_CLEAN_FLAGS
     EOF
 
