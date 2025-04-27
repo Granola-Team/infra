@@ -20,5 +20,6 @@ ssh "$TARGET" "
   systemctl stop buildkite-agent.service
   nixos-rebuild switch -I nixos-config=config.nix --upgrade &&
   nixos-rebuild boot -I nixos-config=config.nix --upgrade &&
+  systemctl start buildkite-agent.service
   :
 "
