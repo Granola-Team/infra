@@ -28,6 +28,14 @@
     device = "/dev/sda";
     fsType = "ext4";
   };
+  fileSystems."/mnt/minasearch-prod-green" = {
+   device = "/dev/disk/by-id/scsi-0Linode_Volume_minasearch-prod-green";
+   fsType = "ext4";
+   options = [
+     "noatime"
+     "nofail" # Prevent system from failing if this drive doesn't mount
+   ];
+  };
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
