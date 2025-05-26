@@ -1,0 +1,16 @@
+#! /usr/bin/env bash
+
+set -x
+set -euo pipefail
+
+# minasearch-prod-blue
+TARGET='root@172.232.152.58'
+
+scp *.nix ../*.nix "$TARGET":
+scp ~/Sync/crit/keys/granola-cloudflare-minasearch-creds-json "$TARGET":/run/keys/granola-cloudflare-minasearch-creds-json
+ssh "$TARGET" "
+  chmod 0400 /run/keys/granola-cloudflare-minasearch-creds-json &&
+  nixos-rebuild switch -I nixos-config=config.nix &&
+  nixos-rebuild boot -I nixos-config=config.nix &&
+  :
+"
