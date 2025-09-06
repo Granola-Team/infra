@@ -60,5 +60,15 @@
     "flakes"
   ];
 
+  # The large 'nofile' value is required for the mina-indexer.
+  security.pam.loginLimits = [
+    {
+      domain = "*";
+      item = "nofile";
+      type = "-";
+      value = "1234567";
+    }
+  ];
+
   system.stateVersion = "23.11"; # Did NOT change this!
 }

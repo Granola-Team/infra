@@ -17,6 +17,16 @@ let
     buildkite-agent start --config "$HOME"/buildkite-agent.cfg
   '';
 
+  secretsImportScript = pkgs.writeScript "secrets-import" ''
+    set -eu
+    NETLIFY_AUTH_TOKEN="$(cat /run/keys/netlify-auth-token)"
+    export NETLIFY_AUTH_TOKEN
+    LINODE_OBJ_ACCESS_KEY="$(cat /run/keys/linode-access-key)" 
+    export LINODE_OBJ_ACCESS_KEY
+    LINODE_OBJ_SECRET_KEY="$(cat /run/keys/linode-secret-key)" 
+    export LINODE_OBJ_SECRET_KEY
+  '';
+
   hooksPath = pkgs.runCommandLocal "buildkite-agent-hooks" { } ''
     mkdir $out
 
@@ -26,6 +36,8 @@ let
     BUILDKITE_GIT_CLEAN_FLAGS='-ffdx --exclude=rust/.cargo'
     export BUILDKITE_GIT_CLEAN_FLAGS
     EOF
+
+    ln -s ${secretsImportScript} $out/environment
   '';
 
 in
@@ -48,7 +60,7 @@ in
       name="granola-builder-%spawn"
       spawn=3
       priority=100
-      tags="production=false,flox=true,nix=true,tier1=true,tier2=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false"
+      tags="production=false,flox=true,nix=true,tier1=true,tier2=true,tier3=true,os-kernel=linux,os-family=nixos,os-variant=nixos,docker=true,xwindows=false"
       build-path="$HOME/builds"
       hooks-path="${hooksPath}"
       EOF
